@@ -37,13 +37,13 @@ export default function PatientLogin() {
       
       // Check if patient record exists
       const { data: existingPatient, error: fetchError } = await supabase
-        .from('patients')
-        .select('*')
-        .eq('user_id', data.user.id)
-        .single()
+  .from('patients')
+  .select('*')
+  .eq('user_id', data.user.id)
+  .maybeSingle()  // Use maybeSingle() instead of single()
       
       // If there's no patient record yet, create one
-      if (!existingPatient && !fetchError) {
+      if (!existingPatient) {
         const { error: insertError } = await supabase
           .from('patients')
           .insert([
@@ -57,7 +57,8 @@ export default function PatientLogin() {
         
         if (insertError) {
           console.error('Error creating patient record:', insertError)
-          // Continue anyway - we'll try again next login
+          setError('Failed to create patient profile. Please contact support.')
+          return
         }
       }
       

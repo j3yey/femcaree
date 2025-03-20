@@ -11,6 +11,7 @@ import Unauthorized from './components/Unauthorized'
 import Home from './components/Home'
 import './App.css'
 
+
 function App() {
   return (
     <Router>
@@ -36,7 +37,7 @@ function App() {
                   <DoctorDashboard />
                 </ProtectedRoute>
               } 
-            />
+            />      
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

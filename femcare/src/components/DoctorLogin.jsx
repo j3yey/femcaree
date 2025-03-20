@@ -1,4 +1,3 @@
-// src/components/DoctorLogin.jsx
 import { useState } from 'react'
 import { supabase } from '../supabaseClient'
 import { useNavigate } from 'react-router-dom'
@@ -33,6 +32,35 @@ export default function DoctorLogin() {
       // Check if the user is a doctor
       if (data.user.user_metadata.user_type !== 'doctor') {
         throw new Error('This login is only for doctors')
+      }
+      
+      // Check if doctor record exists
+      const { data: existingDoctor, error: fetchError } = await supabase
+        .from('doctors')
+        .select('*')
+        .eq('user_id', data.user.id)
+        .maybeSingle()
+      
+      console.log('Fetch result:', { existingDoctor, fetchError });
+      
+      // If there's no doctor record yet, create one
+      if (!existingDoctor && !fetchError) {
+        const { error: insertError } = await supabase
+          .from('doctors')
+          .insert([
+            { 
+              user_id: data.user.id, 
+              full_name: data.user.user_metadata.full_name || 'Unknown Doctor', 
+              email: data.user.email, 
+              specialty: data.user.user_metadata.specialty || 'General Practice' 
+            }
+          ])
+        
+        if (insertError) {
+          console.error('Error creating doctor record:', insertError)
+          setError('Failed to create doctor profile. Please contact support.')
+          return
+        }
       }
       
       // Navigate to doctor dashboard
