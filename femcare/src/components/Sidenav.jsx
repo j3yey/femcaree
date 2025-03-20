@@ -27,42 +27,58 @@ export default function Sidenav({ onSignOut }) {
       </div>
 
       <ul className="sidebar-menu">
-        <li>
-          <Link to="/appointments">
-            <FaHome /> <span className={collapsed ? 'hidden' : ''}>Appointments</span>
-          </Link>
-        </li>
-        <li>
-          <Link to="/patient-dashboard">
-            <FaUserMd /> <span className={collapsed ? 'hidden' : ''}>Patient Dashboard</span>
-          </Link>
-        </li>
-        <li>
-          <Link to="/doctor-dashboard">
-            <FaClipboardList /> <span className={collapsed ? 'hidden' : ''}>Doctor Dashboard</span>
-          </Link>
-        </li>
-        <li>
-          <Link to="/medical-records">
-            <FaClipboardList /> <span className={collapsed ? 'hidden' : ''}>Medical Records</span>
-          </Link>
-        </li>
-        <li>
-          <Link to="/patients">
-            <FaUserMd /> <span className={collapsed ? 'hidden' : ''}>Patients</span>
-          </Link>
-        </li>
+        <div className="menu-item">
+          <li>
+            <Link to="/appointments">
+              <FaHome /> <span className={collapsed ? 'hidden' : ''}>Appointments</span>
+            </Link>
+          </li>
+        </div>
+
+        <div className="menu-item">
+          <li>
+            <Link to="/patient-dashboard">
+              <FaUserMd /> <span className={collapsed ? 'hidden' : ''}>Patient Dashboard</span>
+            </Link>
+          </li>
+        </div>
+
+        <div className="menu-item">
+          <li>
+            <Link to="/doctor-dashboard">
+              <FaClipboardList /> <span className={collapsed ? 'hidden' : ''}>Doctor Dashboard</span>
+            </Link>
+          </li>
+        </div>
+
+        <div className="menu-item">
+          <li>
+            <Link to="/medical-records">
+              <FaClipboardList /> <span className={collapsed ? 'hidden' : ''}>Medical Records</span>
+            </Link>
+          </li>
+        </div>
+
+        <div className="menu-item">
+          <li>
+            <Link to="/patients">
+              <FaUserMd /> <span className={collapsed ? 'hidden' : ''}>Patients</span>
+            </Link>
+          </li>
+        </div>
       </ul>
 
-      <button 
-        onClick={() => {
-          onSignOut();
-          navigate("/");
-        }} 
-        className="logout-button"
-      >
-        <FaSignOutAlt /> <span className={collapsed ? 'hidden' : ''}>Sign Out</span>
-      </button>
+      <div className="menu-item logout-container">
+        <button
+          onClick={() => {
+            onSignOut();
+            navigate("/");
+          }}
+          className="logout-button"
+        >
+          <FaSignOutAlt /> <span className={collapsed ? 'hidden' : ''}>Sign Out</span>
+        </button>
+      </div>
     </nav>
   );
 }
