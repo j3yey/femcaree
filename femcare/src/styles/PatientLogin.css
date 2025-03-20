@@ -1,0 +1,93 @@
+/* src/styles/PatientLogin.css */
+
+.auth-container {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .auth-container h2 {
+    color: #246624;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+  
+  .error-message {
+    background: #ffebee;
+    color: #d32f2f;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+  }
+  
+  .form-group {
+    text-align: left;
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+  
+  .form-group input:focus {
+    border-color: #246624;
+    box-shadow: 0 0 5px rgba(36, 102, 36, 0.3);
+  }
+  
+  .auth-button {
+    width: 100%;
+    background: #246624;
+    color: white;
+    font-size: 1rem;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+  }
+  
+  .auth-button:hover {
+    background: #1e4e1e;
+    transform: scale(1.02);
+  }
+  
+  .auth-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .auth-link {
+    margin-top: 15px;
+    font-size: 0.9rem;
+  }
+  
+  .auth-link a {
+    color: #246624;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .auth-link a:hover {
+    text-decoration: underline;
+  }
+  

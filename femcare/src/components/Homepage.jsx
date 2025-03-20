@@ -1,15 +1,41 @@
-// src/components/Home.jsx
-import { Link } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
-import '../styles/Login.css'
+import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import '../styles/Login.css';
 
-export default function Home() {
-  const { user, isPatient, isDoctor } = useAuth()
-  
+export default function HomePage() {
+  const { user, isPatient, isDoctor } = useAuth();
+
   return (
     <div className="home-container">
-      <h1>Medical Portal</h1>
-      
+      <h1>FemCare Medical Portal</h1>
+
+      {/* FemCare Description */}
+      <div className="description-container">
+        <p>
+          FemCare is dedicated to providing high-quality healthcare solutions for women, 
+          ensuring accessible, efficient, and patient-centered medical services.
+        </p>
+      </div>
+
+      {/* Mission & Vision Section */}
+      <div className="mission-vision-container">
+        <div className="mission">
+          <h2>Our Mission</h2>
+          <p>
+            To empower women's health by offering comprehensive and accessible medical services, 
+            fostering a compassionate and innovative healthcare environment.
+          </p>
+        </div>
+        <div className="vision">
+          <h2>Our Vision</h2>
+          <p>
+            To be the leading healthcare platform dedicated to women's wellness, 
+            integrating technology and professional care for a healthier future.
+          </p>
+        </div>
+      </div>
+
+      {/* Authentication Options */}
       {user ? (
         <div className="welcome-container">
           <h2>Welcome Back!</h2>
@@ -38,13 +64,6 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          
-          <div class="bubble"></div>
-          <div class="bubble"></div>
-<div class="bubble"></div>
-<div class="bubble"></div>
-<div class="bubble"></div>
-<div class="bubble"></div>
 
           <div className="auth-option">
             <h2>For Doctors</h2>
@@ -56,5 +75,5 @@ export default function Home() {
         </div>
       )}
     </div>
-  )
+  );
 }

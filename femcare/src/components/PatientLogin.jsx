@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { supabase } from '../supabaseClient'
 import { useNavigate } from 'react-router-dom'
+import '../styles/PatientLogin.css'
 
 export default function PatientLogin() {
   const navigate = useNavigate()

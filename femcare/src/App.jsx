@@ -9,6 +9,10 @@ import PatientDashboard from './components/PatientDashboard'
 import DoctorDashboard from './components/DoctorDashboard'
 import Unauthorized from './components/Unauthorized'
 import Home from './components/Home'
+import HomePage from './components/Homepage'
+import Patients from './components/Patients'
+import Appointments from './components/Appointments'
+import MedicalRecords from './components/MedicalRecords'
 import './App.css'
 
 
@@ -19,6 +23,10 @@ function App() {
         <div className="app-container">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/home-page" element={<HomePage />} />
+            <Route path="/patients" element={<Patients />} />
+            <Route path="/appointments" element={<Appointments/>} />
+            <Route path="/medical-records" element={<MedicalRecords/>} />
             <Route path="/patient-register" element={<PatientRegistration />} />
             <Route path="/patient-login" element={<PatientLogin />} />
             <Route path="/doctor-login" element={<DoctorLogin />} />

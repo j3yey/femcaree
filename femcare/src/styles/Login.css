@@ -1,0 +1,234 @@
+/* src/styles/Home.css */
+
+.home-container {
+    width: 1100px;
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 50px;
+    background: rgba(255, 255, 255, 0.15); /* Softer glassmorphism effect */
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    border: 2px solid white;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Title */
+.home-container h1 {
+    color: #ffffff;
+    font-size: 2.2rem;
+    margin-bottom: 25px;
+}
+
+/* Welcome Section */
+.welcome-container {
+    margin-top: 20px;
+}
+
+/* Authentication Options Layout */
+.auth-options {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+/* Individual Authentication Option */
+.auth-option {
+    background: rgba(36, 102, 36, 0.5); /* Improved glassmorphism effect */
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    flex: 1;
+    min-width: 300px;
+}
+
+/* Authentication Button Styling */
+/* Primary Authentication Button */
+.auth-button {
+    background: linear-gradient(135deg, #246624, #1e4e1e); /* Richer gradient */
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 14px 26px;
+    border: none;
+    border-radius: 10px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Button Hover Effect */
+.auth-button:hover {
+    background: linear-gradient(135deg, #1e4e1e, #143a14);
+    transform: translateY(-2px) scale(1.1); /* Slight lift effect */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Button Active (Click) Effect */
+.auth-button:active {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Secondary Button */
+.auth-button.secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+}
+
+/* Secondary Button Hover */
+.auth-button.secondary:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px) scale(1.08);
+    box-shadow: 0 6px 18px rgba(255, 255, 255, 0.2);
+}
+
+/* Secondary Button Active */
+.auth-button.secondary:active {
+    transform: scale(1.02);
+}
+
+/* Description Styling */
+.description-container {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: #444;
+}
+
+/* Mission & Vision Styling */
+.mission-vision-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 30px 0;
+}
+
+.mission, .vision {
+    width: 40%;
+    padding: 20px;
+    background: #f8f8f8;
+    border-left: 5px solid #246624;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mission h2, .vision h2 {
+    color: #246624;
+    margin-bottom: 10px;
+}
+
+
+/* Full Page Background */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(135deg, #c1bfd8, #8aad8a, #557a55, #3c8c3c);
+    background-size: 400% 400%;
+    animation: gradientBG 12s infinite alternate ease-in-out;
+    z-index: 0;
+}
+
+/* Floating Elements */
+.bubble {
+    position: absolute;
+    background: rgba(61, 161, 161, 0.3); /* Slightly more visible */
+    border-radius: 50%;
+    opacity: 1.5; /* Balanced visibility */
+    animation: floatUp 10s ease-in-out infinite, drift 6s infinite ease-in-out alternate;
+    z-index: -1;
+}
+
+/* Floating Animation (Upwards - Smooth) */
+@keyframes floatUp {
+    from {
+        transform: translateY(100vh) scale(1);
+        opacity: 0.85;
+    }
+    to {
+        transform: translateY(-10vh) scale(0.6);
+        opacity: 0;
+    }
+}
+
+/* Random floating motion (not just side to side) */
+@keyframes drift {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-30px, 20px); }
+    50% { transform: translate(30px, -20px); }
+    75% { transform: translate(-20px, -30px); }
+    100% { transform: translate(20px, 30px); }
+}
+
+/* Varying bubble sizes, positions, and speeds */
+.bubble:nth-child(1) {
+    width: 60px;
+    height: 60px;
+    left: 3%;
+    animation-duration: 10s, 6s;
+}
+.bubble:nth-child(2) {
+    width: 100px;
+    height: 100px;
+    left: 15%;
+    animation-duration: 14s, 7s;
+}
+.bubble:nth-child(3) {
+    width: 70px;
+    height: 70px;
+    left: 35%;
+    animation-duration: 11s, 6.5s;
+}
+.bubble:nth-child(4) {
+    width: 120px;
+    height: 120px;
+    left: 55%;
+    animation-duration: 16s, 7s;
+}
+.bubble:nth-child(5) {
+    width: 50px;
+    height: 50px;
+    left: 72%;
+    animation-duration: 12s, 5.5s;
+}
+.bubble:nth-child(6) {
+    width: 110px;
+    height: 110px;
+    left: 90%;
+    animation-duration: 15s, 8.5s;
+}
+.bubble:nth-child(7) {
+    width: 80px;
+    height: 80px;
+    left: 25%;
+    animation-duration: 13s, 6s;
+}
+.bubble:nth-child(8) {
+    width: 90px;
+    height: 90px;
+    left: 65%;
+    animation-duration: 12s, 7.5s;
+}

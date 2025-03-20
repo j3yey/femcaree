@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../supabaseClient'
@@ -91,7 +92,25 @@ export default function DoctorDashboard() {
       
       <div className="dashboard-actions">
         <button onClick={signOut} className="logout-button">Sign Out</button>
+=======
+import { useAuth } from '../contexts/AuthContext';
+import Sidenav from './Sidenav.jsx';
+import '../styles/DoctorDashboard.css';
+
+export default function DoctorDashboard() {
+  const { user, signOut } = useAuth();
+
+  return (
+    <div className="dashboard-container">
+      {/* Sidebar */}
+      <Sidenav onSignOut={signOut} />
+
+      {/* Main Content */}
+      <div className="dashboard-content">
+        <h1>Doctor Dashboard</h1>
+        <p>Welcome, Dr. {user?.user_metadata?.full_name || 'Doctor'}</p>
+>>>>>>> Stashed changes
       </div>
     </div>
-  )
+  );
 }
