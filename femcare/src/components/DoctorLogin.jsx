@@ -41,26 +41,8 @@ export default function DoctorLogin() {
         .eq('user_id', data.user.id)
         .maybeSingle()
       
-      console.log('Fetch result:', { existingDoctor, fetchError });
-      
-      // If there's no doctor record yet, create one
-      if (!existingDoctor && !fetchError) {
-        const { error: insertError } = await supabase
-          .from('doctors')
-          .insert([
-            { 
-              user_id: data.user.id, 
-              full_name: data.user.user_metadata.full_name || 'Unknown Doctor', 
-              email: data.user.email, 
-              specialty: data.user.user_metadata.specialty || 'General Practice' 
-            }
-          ])
-        
-        if (insertError) {
-          console.error('Error creating doctor record:', insertError)
-          setError('Failed to create doctor profile. Please contact support.')
-          return
-        }
+      if (fetchError || !existingDoctor) {
+        throw new Error('No doctor account found. Please contact the administrator.')
       }
       
       // Navigate to doctor dashboard
@@ -107,9 +89,14 @@ export default function DoctorLogin() {
         </button>
       </form>
       
-      <p className="auth-note">
-        Doctor accounts are created by administrators.
-      </p>
+      <div className="auth-note">
+        <p>
+          Doctor accounts are created by administrators only.
+        </p>
+        <p>
+          If you need an account, please contact the system administrator.
+        </p>
+      </div>
     </div>
   )
 }

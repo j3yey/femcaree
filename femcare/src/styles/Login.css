@@ -140,13 +140,9 @@
 /* Full Page Background */
 body {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
     overflow: hidden;
     position: relative;
-    background: linear-gradient(135deg, #c1bfd8, #8aad8a, #557a55, #3c8c3c);
     background-size: 400% 400%;
     animation: gradientBG 12s infinite alternate ease-in-out;
     z-index: 0;

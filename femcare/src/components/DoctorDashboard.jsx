@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../supabaseClient'
-import Sidenav from './Sidenav.jsx';
+import DoctorSidenav from './DoctorSidenav'
 
 export default function DoctorDashboard() {
   const { user, signOut } = useAuth()
@@ -50,48 +50,51 @@ export default function DoctorDashboard() {
   }
   
   return (
-    <div className="dashboard-container">
-      <h1>Doctor Dashboard</h1>
-      
-      {error && <div className="error-message">{error}</div>}
-      
-      <div className="doctor-info">
-        <h2>Welcome, Dr. {doctorInfo?.full_name || user?.user_metadata?.full_name || 'Doctor'}</h2>
-        {doctorInfo?.specialty && <p>Specialty: {doctorInfo.specialty}</p>}
-        <p>Email: {doctorInfo?.email || user?.email}</p>
-      </div>
-      
-      <div className="patients-list">
-        <h3>Your Patients ({patients.length})</h3>
-        
-        {patients.length === 0 ? (
-          <p>No patients found in the system.</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Registration Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {patients.map(patient => (
-                <tr key={patient.id}>
-                  <td>{patient.full_name}</td>
-                  <td>{patient.email}</td>
-                  <td>{patient.phone_number}</td>
-                  <td>{new Date(patient.created_at).toLocaleDateString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-      
-      <div className="dashboard-actions">
-        <button onClick={signOut} className="logout-button">Sign Out</button>
+    <div className="app-container">
+      <DoctorSidenav onSignOut={signOut} />
+      <div className="main-content">
+        <div className="dashboard-container">
+          <h1>Doctor Dashboard</h1>
+          
+          {error && <div className="error-message">{error}</div>}
+          
+          <div className="doctor-info">
+            <h2>Welcome, Dr. {doctorInfo?.full_name || user?.user_metadata?.full_name || 'Doctor'}</h2>
+            {doctorInfo?.specialty && <p>Specialty: {doctorInfo.specialty}</p>}
+            <p>Email: {doctorInfo?.email || user?.email}</p>
+          </div>
+          
+          <div className="patients-list">
+            <h3>Your Patients ({patients.length})</h3>
+            
+            {patients.length === 0 ? (
+              <p>No patients found in the system.</p>
+            ) : (
+              <div className="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Registration Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {patients.map(patient => (
+                      <tr key={patient.id}>
+                        <td>{patient.full_name}</td>
+                        <td>{patient.email}</td>
+                        <td>{patient.phone_number}</td>
+                        <td>{new Date(patient.created_at).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )

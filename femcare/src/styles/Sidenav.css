@@ -1,113 +1,151 @@
-/* Parent container to align sidebar and content */
-.app-container {
-    display: flex;
-    height: 100vh;
-}
 
-/* Sidebar styling */
+/* Sidebar Base */
 .sidebar {
-    width: 250px;
-    background: #202020; /* Darker professional shade */
+    width: 280px;
+    background: linear-gradient(180deg, #ff69b4 0%, #da4a91 100%);
     color: white;
-    padding: 20px;
     height: 100vh;
     display: flex;
     flex-direction: column;
     position: fixed;
     left: 0;
     top: 0;
-    transition: width 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    overflow: hidden;
-    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2); /* Soft shadow */
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 0 20px rgba(218, 74, 145, 0.2);
 }
 
-/* Adjust main content to prevent overlap */
-.main-content {
-    margin-left: 250px;
-    flex-grow: 1;
-    padding: 20px;
-    transition: margin-left 0.3s ease-in-out;
-}
-
-/* Collapsed Sidebar */
+/* Collapsed State */
 .sidebar.collapsed {
     width: 80px;
 }
 
-/* When sidebar is collapsed, adjust the main content */
-.sidebar.collapsed + .main-content {
-    margin-left: 80px;
+/* Logo and Header */
+.sidebar-header {
+    padding: 24px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Sidebar Menu Items */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-button {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.toggle-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(180deg);
+}
+
+/* Menu Items */
 .sidebar-menu {
     list-style: none;
-    padding: 0;
-    margin: 20px 0;
-    flex-grow: 1; /* Push logout button to the bottom */
+    padding: 20px 15px;
+    margin: 0;
+    flex-grow: 1;
 }
 
-/* Container for each button */
 .menu-item {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    margin-bottom: 20px; /* Increased spacing */
-    padding: 12px;
-    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+    margin-bottom: 10px;
 }
 
-.menu-item:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
-}
-
-/* Sidebar Links */
-.sidebar-menu li {
+.menu-link {
     display: flex;
     align-items: center;
-    gap: 12px;
-}
-
-.sidebar-menu li a {
+    padding: 12px 15px;
     text-decoration: none;
     color: white;
-    display: flex;
-    align-items: center;
-    width: 100%;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    gap: 12px;
+    font-weight: 500;
 }
 
-/* Hide text when sidebar is collapsed */
-.sidebar.collapsed .sidebar-menu li span {
+.menu-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
+}
+
+.menu-link:hover .menu-icon {
+    transform: scale(1.1);
+    color: #000000;
+    transition: all 0.3s ease;
+}
+
+.menu-icon {
+    font-size: 1.2rem;
+    min-width: 24px;
+}
+
+/* Hide text when collapsed */
+.hidden {
     display: none;
 }
 
-/* Logout Button Container */
+/* Logout Section */
 .logout-container {
-    margin-top: auto;
-    padding-top: 10px;
+    padding: 20px 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Logout Button Styling */
 .logout-button {
     width: 100%;
-    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    background: rgba(255, 255, 255, 0.15);
     color: white;
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 14px 20px;
+    padding: 12px;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s ease-in-out;
     display: flex;
     align-items: center;
-    gap: 10px;
     justify-content: center;
+    gap: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
 .logout-button:hover {
-    background: linear-gradient(135deg, #b71c1c, #8a1e1e);
-    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    color:black;
+}
+.app-container{
+    background-color: white !important;
+    }
+
+/* Main Content Adjustment */
+.main-content {
+    margin-left: 280px;
+    padding: 24px;
+    transition: margin-left 0.3s ease;
+    width: calc(100% - 280px);
+    background: white !important;
+}
+
+.sidebar.collapsed ~ .main-content {
+    margin-left: 80px;
+    width: calc(100% - 80px);
 }
 
 /* Responsive Design */
@@ -115,7 +153,57 @@
     .sidebar {
         width: 80px;
     }
+    
+    .sidebar .logo-text,
+    .sidebar .menu-link span {
+        display: none;
+    }
+    
     .main-content {
         margin-left: 80px;
+        width: calc(100% - 80px);
     }
+    
+    .logout-button span {
+        display: none;
+    }
+}
+
+/* Active Link Style */
+.menu-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-left: 4px solid white;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.sidebar {
+    animation: slideIn 0.3s ease;
+}
+
+/* Custom Scrollbar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+/* Hover effects for menu items */
+.menu-link:hover .menu-icon {
+    transform: scale(1.1);
 }

@@ -1,0 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+  }
+  h1{
+    margin-top:-10px;
+  }
+hr{
+    width: 350%;
+}
+/* Refined animation for the upload icon */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.1); }
+}
+
+.animate-bounce {
+    animation: bounce 2s ease-in-out infinite;
+}
+
+/* Glass morphism effect for cards */
+.glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
+}
+.glass-card2 {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
+    position:absolute;
+    margin-left:600px;
+    margin-top:-294px;
+    max-height: 150%;
+
+}
+
+/* Enhanced scrollbar styling */
+.overflow-x-auto {
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 #f1f5f9;
+}
+
+.overflow-x-auto::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+    background-color: #94a3b8;
+    border-radius: 4px;
+    border: 2px solid #f1f5f9;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+    background-color: #64748b;
+}
+
+/* File upload dropzone animation */
+@keyframes pulse-border {
+    0%, 100% { border-color: #e2e8f0; }
+    50% { border-color: #3b82f6; }
+}
+
+.dropzone-active {
+    animation: pulse-border 1.5s infinite;
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Improved transitions */
+.transition-all {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading skeleton animation */
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+.loading-skeleton {
+    background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* File type badges with different colors */
+.file-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+}
+
+.file-badge-pdf {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: rgb(185, 28, 28);
+}
+
+.file-badge-image {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: rgb(4, 120, 87);
+}
+
+.file-badge-doc {
+    background-color: rgba(37, 99, 235, 0.1);
+    color: rgb(30, 64, 175);
+}
+
+.file-badge-default {
+    background-color: rgba(107, 114, 128, 0.1);
+    color: rgb(75, 85, 99);
+}
+
+/* Enhanced upload zone */
+.upload-zone {
+    border: 3px dashed #e2e8f0;
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.upload-zone:hover {
+    border-color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Better buttons */
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+}
+
+.btn-download {
+    color: #2563eb;
+    background-color: rgba(37, 99, 235, 0.1);
+}
+
+.btn-download:hover {
+    background-color: rgba(37, 99, 235, 0.2);
+}
+
+.btn-delete {
+    color: #dc2626;
+    background-color: rgba(220, 38, 38, 0.1);
+}
+
+.btn-delete:hover {
+    background-color: rgba(220, 38, 38, 0.2);
+}
+
+/* Table row hover effect */
+.table-row {
+    transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+    background-color: #f8fafc;
+}
+
+/* Custom background gradient */
+.bg-gradient-blue {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+/* Custom file icon styles */
+.file-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    margin-right: 0.75rem;
+}
+
+.file-icon-pdf {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: rgb(239, 68, 68);
+}
+
+.file-icon-doc {
+    background-color: rgba(37, 99, 235, 0.1);
+    color: rgb(37, 99, 235);
+}
+
+.file-icon-image {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: rgb(16, 185, 129);
+}
+
+.file-icon-default {
+    background-color: rgba(107, 114, 128, 0.1);
+    color: rgb(107, 114, 128);
+}
+
+/* Empty state styling */
+.empty-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    background-color: #f8fafc;
+    border-radius: 1rem;
+    border: 2px dashed #e2e8f0;
+}
+
+.empty-state-icon {
+    font-size: 5rem;
+    color: #cbd5e1;
+    margin-bottom: 1.5rem;
+}
+
+/* Toast notification styles */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 24rem;
+    z-index: 50;
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast-success {
+    background-color: #ecfdf5;
+    border-left: 4px solid #10b981;
+    color: #065f46;
+}
+
+.toast-error {
+    background-color: #fef2f2;
+    border-left: 4px solid #ef4444;
+    color: #b91c1c;
+}

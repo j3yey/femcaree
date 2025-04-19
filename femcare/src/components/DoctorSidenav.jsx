@@ -7,18 +7,17 @@ import {
   FaHome, 
   FaFileAlt,
   FaUser,
-  FaBabyCarriage,
-  FaChartLine 
+  FaUserInjured
 } from 'react-icons/fa';
 import '../styles/Sidenav.css';
 
-export default function Sidenav({ onSignOut }) {
+export default function DoctorSidenav({ onSignOut }) {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const savedState = localStorage.getItem('sidebarCollapsed');
+    const savedState = localStorage.getItem('doctorSidebarCollapsed');
     if (savedState !== null) {
       setCollapsed(JSON.parse(savedState));
     }
@@ -26,29 +25,34 @@ export default function Sidenav({ onSignOut }) {
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
-    localStorage.setItem('sidebarCollapsed', JSON.stringify(!collapsed));
+    localStorage.setItem('doctorSidebarCollapsed', JSON.stringify(!collapsed));
   };
 
   const menuItems = [
     {
-      to: "/patient-dashboard",
+      to: "/doctor-dashboard",
       icon: <FaHome className="menu-icon" />,
-      label: "Home"
+      label: "Dashboard"
     },
     {
-      to: "/appointments",
-      icon: <FaCalendarAlt className="menu-icon" />,
-      label: "Appointments"
-    },
-    {
-      to: "/medical-records",
-      icon: <FaFileAlt className="menu-icon" />,
-      label: "Medical Records"
-    },
-    {
-      to: "/profile",
+      to: "/doctor-profile",
       icon: <FaUser className="menu-icon" />,
       label: "Profile"
+    },
+    {
+      to: "/patient-appointments",
+      icon: <FaCalendarAlt className="menu-icon" />,
+      label: "Patient Appointments"
+    },
+    {
+      to: "/patient-records",
+      icon: <FaFileAlt className="menu-icon" />,
+      label: "Patient Records"
+    },
+    {
+      to: "/patients-data",
+      icon: <FaUserInjured className="menu-icon" />,
+      label: "Patients"
     }
   ];
 
