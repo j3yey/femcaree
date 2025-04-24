@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import Header from './Header';
 import Sidenav from './Sidenav';
 import { FaCamera, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 import '../styles/Profile.css';
@@ -7,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function Profile() {
   const { user } = useAuth();
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [profileData, setProfileData] = useState({
     full_name: '',
     date_of_birth: '',
@@ -35,6 +37,10 @@ export default function Profile() {
       fetchProfileData();
     }
   }, [user]);
+
+  const handleSidebarCollapse = (collapsed) => {
+    setIsSidebarCollapsed(collapsed);
+  };
 
   const fetchProfileData = async () => {
     try {
@@ -186,50 +192,52 @@ export default function Profile() {
   }
 
   return (
-    <div className="app-layout">
-      <Sidenav />
-      <div className="main-content">
-        <div className="profile-main">
-          {error && (
-            <div className="error-message">
-              {error}
-            </div>
-          )}
+    <div className="app-container">
+      <Header isSidebarCollapsed={isSidebarCollapsed} />
+      <div className="app-layout">
+        <Sidenav onCollapsedChange={handleSidebarCollapse} />
+        <div className="main-content">
+          <div className="profile-main">
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
           
           <div className="profile-header">
-            <div className="profile-picture-section">
-              <div className="profile-picture-container">
-                <img 
-                  src={previewUrl || formData.profile_picture || '/default-avatar.png'} 
-                  alt="Profile" 
-                  className="profile-picture" 
-                />
-                {isEditing && (
-                  <div className="profile-picture-upload">
-                    <label htmlFor="profilePicture" className="upload-label">
-                      <FaCamera className="camera-icon" />
-                      <span>Change Photo</span>
-                    </label>
-                    <input
-                      type="file"
-                      id="profilePicture"
-                      name="profilePicture"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden-input"
-                    />
-                  </div>
-                )}
+              <div className="profile-picture-section">
+                <div className="profile-picture-container">
+                  <img 
+                    src={previewUrl || formData.profile_picture || '/default-avatar.png'} 
+                    alt="Profile" 
+                    className="profile-picture" 
+                  />
+                  {isEditing && (
+                    <div className="profile-picture-upload">
+                      <label htmlFor="profilePicture" className="upload-label">
+                        <FaCamera className="camera-icon" />
+                        <span>Change Photo</span>
+                      </label>
+                      <input
+                        type="file"
+                        id="profilePicture"
+                        name="profilePicture"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden-input"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+              <h1>Patient Profile</h1>
+              <div className="datetime-display">
+                Current Date and Time (UTC): {currentDateTime}
+              </div>
+              <div className="user-info">
+                User: {currentUser}
               </div>
             </div>
-            <h1>Patient Profile</h1>
-            <div className="datetime-display">
-              Current Date and Time (UTC): {currentDateTime}
-            </div>
-            <div className="user-info">
-              User: {currentUser}
-            </div>
-          </div>
           
           <form onSubmit={handleSubmit} className="profile-grid">
             {/* Basic Information Section */}
@@ -444,6 +452,7 @@ export default function Profile() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

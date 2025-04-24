@@ -15,7 +15,7 @@ import PatientRecords from './components/PatientRecords'
 import PatientsData from './components/PatientsData'
 import Profile from './components/Profile'
 import MedicalRecords from './components/MedicalRecords'
-import Appointments from './components/Appointments'
+import AppointmentsBooking from './components/AppointmentsBooking'
 import './App.css'
 
 function App() {
@@ -50,10 +50,10 @@ function App() {
               } 
             />
             <Route 
-              path="/appointments" 
+              path="/appointments-booking" 
               element={
                 <ProtectedRoute requiredRole="patient">
-                  <Appointments />
+                  <AppointmentsBooking />
                 </ProtectedRoute>
               } 
             />

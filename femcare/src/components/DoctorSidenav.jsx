@@ -6,26 +6,47 @@ import {
   FaSignOutAlt, 
   FaHome, 
   FaFileAlt,
-  FaUser,
   FaUserInjured
 } from 'react-icons/fa';
+import DoctorProfile from './DoctorProfile';
 import '../styles/Sidenav.css';
 
-export default function DoctorSidenav({ onSignOut }) {
-  const [collapsed, setCollapsed] = useState(false);
+export default function DoctorSidenav({ onSignOut, onSidebarToggle, isCollapsed }) {
+  const [collapsed, setCollapsed] = useState(isCollapsed || false);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
+    // If isCollapsed prop changes, update local state
+    if (isCollapsed !== undefined && isCollapsed !== collapsed) {
+      setCollapsed(isCollapsed);
+    }
+  }, [isCollapsed]);
+
+  useEffect(() => {
+    // On initial load, check localStorage
     const savedState = localStorage.getItem('doctorSidebarCollapsed');
     if (savedState !== null) {
-      setCollapsed(JSON.parse(savedState));
+      const isCollapsed = JSON.parse(savedState);
+      setCollapsed(isCollapsed);
+      // Notify parent component about initial state
+      onSidebarToggle?.(isCollapsed);
+      
+      // Apply a class to the document body to manage responsive layout
+      document.body.classList.toggle('sidebar-collapsed', isCollapsed);
     }
-  }, []);
+  }, [onSidebarToggle]);
 
   const toggleSidebar = () => {
-    setCollapsed(!collapsed);
-    localStorage.setItem('doctorSidebarCollapsed', JSON.stringify(!collapsed));
+    const newCollapsedState = !collapsed;
+    setCollapsed(newCollapsedState);
+    localStorage.setItem('doctorSidebarCollapsed', JSON.stringify(newCollapsedState));
+    
+    // Apply a class to the document body to manage responsive layout
+    document.body.classList.toggle('sidebar-collapsed', newCollapsedState);
+    
+    // Notify parent component about state change
+    onSidebarToggle?.(newCollapsedState);
   };
 
   const menuItems = [
@@ -33,11 +54,6 @@ export default function DoctorSidenav({ onSignOut }) {
       to: "/doctor-dashboard",
       icon: <FaHome className="menu-icon" />,
       label: "Dashboard"
-    },
-    {
-      to: "/doctor-profile",
-      icon: <FaUser className="menu-icon" />,
-      label: "Profile"
     },
     {
       to: "/patient-appointments",
@@ -70,6 +86,9 @@ export default function DoctorSidenav({ onSignOut }) {
           <FaBars />
         </button>
       </div>
+
+      {/* Only show DoctorProfile when sidebar is expanded */}
+      {!collapsed && <DoctorProfile />}
 
       <ul className="sidebar-menu">
         {menuItems.map((item, index) => (

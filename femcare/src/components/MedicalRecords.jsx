@@ -2,6 +2,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import Sidenav from './Sidenav.jsx';
+import Header from './Header.jsx';
 import { 
   FaDownload, 
   FaTrash, 
@@ -31,15 +32,20 @@ export default function MedicalRecords() {
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const fileInputRef = useRef(null);
-    
+
+    // Add handler for sidebar collapse
+    const handleSidebarCollapse = (collapsed) => {
+        setIsSidebarCollapsed(collapsed);
+    };
+
     // Enhanced toast notification function
     const showNotification = (msg, type = 'success') => {
         setToastMessage(msg);
         setToastType(type);
         setShowToast(true);
         
-        // Auto hide toast after 5 seconds
         setTimeout(() => {
             setShowToast(false);
         }, 5000);
@@ -326,11 +332,13 @@ export default function MedicalRecords() {
         </div>
     );
 
-    return (
-        <div className="dashboard-container">
-            <Sidenav onSignOut={signOut} />
-            
-            <div className="main-content p-8 lg:p-12">
+        return (
+            <div className="app-container">
+                <Sidenav onSignOut={signOut} onCollapsedChange={handleSidebarCollapse} />
+                <div className="main-wrapper">
+                    <Header isSidebarCollapsed={isSidebarCollapsed} />
+                    <div className="dashboard-container">
+                        <div className="main-content p-8 lg:p-12">
                 <div className="sticky top-0 bg-white z-10 pb-4">
                     <motion.div 
                         initial={{ opacity: 0, y: 20 }}
@@ -583,6 +591,8 @@ export default function MedicalRecords() {
                     )}
                 </AnimatePresence>
             </div>
+        </div>
+        </div>
         </div>
     );
 }

@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fa';
 import '../styles/Sidenav.css';
 
-export default function Sidenav({ onSignOut }) {
+export default function Sidenav({ onSignOut, onCollapsedChange }) {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,8 +25,12 @@ export default function Sidenav({ onSignOut }) {
   }, []);
 
   const toggleSidebar = () => {
-    setCollapsed(!collapsed);
-    localStorage.setItem('sidebarCollapsed', JSON.stringify(!collapsed));
+    const newCollapsed = !collapsed;
+    setCollapsed(newCollapsed);
+    localStorage.setItem('sidebarCollapsed', JSON.stringify(newCollapsed));
+    if (onCollapsedChange) {
+      onCollapsedChange(newCollapsed);
+    }
   };
 
   const menuItems = [
@@ -36,7 +40,7 @@ export default function Sidenav({ onSignOut }) {
       label: "Home"
     },
     {
-      to: "/appointments",
+      to: "/appointments-booking",
       icon: <FaCalendarAlt className="menu-icon" />,
       label: "Appointments"
     },

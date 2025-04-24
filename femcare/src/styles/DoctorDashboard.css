@@ -1,78 +1,573 @@
 .app-container {
   display: flex;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: white;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 .main-content {
-  margin-left: 280px;
-  padding: 24px;
-  transition: margin-left 0.3s ease;
-  width: calc(100% - 280px);
-  background: white;
+  flex: 1;
+  margin-left: 250px; /* Match the width of expanded sidebar */
+  transition: all 0.3s ease;
+  width: calc(100% - 250px); /* This ensures content takes full available width */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
 }
 
-.sidebar.collapsed ~ .main-content {
-  margin-left: 80px;
-  width: calc(100% - 80px);
+.sidebar-collapsed .main-content {
+  margin-left: 80px; /* Match the width of collapsed sidebar */
+  width: calc(100% - 80px); /* Full width minus collapsed sidebar width */
+}
+
+
+.content-expanded {
+  max-width: none; /* Remove any max-width limitations */
+  width: calc(100% - 80px); /* Take full available width minus collapsed sidebar */
+  transition: all 0.3s ease; /* Match the transition of main-content */
 }
 
 .dashboard-container {
-  padding: 20px;
+  flex: 1;
+  width: 100%;
+  padding: 24px 32px;
+  box-sizing: border-box;
+  max-width: none; /* Remove any max-width limitations */
+  display: flex;
+  flex-direction: column;
+  background-image: none;
+}
+
+/* Adjust grid layouts based on sidebar state */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 2.5rem;
+  width: 100%;
+  flex: 1;
+}
+
+.patient-age-distribution,
+.common-conditions,
+.monthly-trend {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 1.8rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
 }
 
-.doctor-info {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
 
-.doctor-info h2 {
-  color: #333;
-  margin-bottom: 16px;
-}
-
-.patients-list {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.patients-list h3 {
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.table-responsive {
-  overflow-x: auto;
-}
-
-table {
+.dashboard-header {
+  position: relative;
+  margin-bottom: 2rem;
+  padding: 2.5rem; /* Increased padding */
+  background: linear-gradient(135deg, #FFF0F3 0%, #FFE5EC 100%); /* This is a pink gradient, not blue */
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(255, 182, 193, 0.2);
+  overflow: hidden;
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
+  box-sizing: border-box;
 }
 
-th, td {
-  padding: 12px;
+.dashboard-header-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Space content across the width */
+  align-items: center;
+}
+
+.header-decoration {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 250px; /* Larger decoration */
+  height: 250px;
+  background: linear-gradient(45deg, rgba(255, 192, 203, 0.2), rgba(255, 182, 193, 0.3));
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.header-decoration-2 {
+  position: absolute;
+  bottom: -30px;
+  left: -30px;
+  width: 200px; /* Larger decoration */
+  height: 200px;
+  background: linear-gradient(45deg, rgba(255, 182, 193, 0.2), rgba(255, 192, 203, 0.3));
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.doctor-welcome {
   text-align: left;
-  border-bottom: 1px solid #eee;
+  width: 100%;
 }
 
-th {
-  background-color: #f8f9fa;
+.doctor-welcome h1 {
+  margin: 0;
+  font-size: 2.2rem; /* Slightly larger font */
+  color: #2c3e50;
   font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.specialty {
+  color: #666;
+  margin: 0.5rem 0 0;
+  font-size: 1.2rem; /* Slightly larger font */
+  opacity: 0.8;
+}
+
+.doctor-profile {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Increased gap */
+  width: 100%;
+}
+
+.doctor-info h1 {
+  margin: 0;
+  font-size: 1.6rem; /* Slightly larger font */
   color: #333;
 }
 
-tr:hover {
-  background-color: #f8f9fa;
+.quick-actions {
+  display: flex;
+  gap: 1.5rem; /* Increased gap */
+  width: 100%;
+}
+
+.action-button {
+  padding: 0.85rem 1.8rem; /* Larger buttons */
+  border: none;
+  border-radius: 8px;
+  background: #1976d2;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 1.05rem; /* Larger text */
+}
+
+.action-button:hover {
+  background: #1565c0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem; /* Increased gap */
+  margin-bottom: 2.5rem; /* More space below */
+  width: 100%;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.8rem; /* More padding */
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.stat-card h3 {
+  margin: 0;
+  color: #666;
+  font-size: 1.1rem; /* Slightly larger font */
+  font-weight: 500;
+}
+
+.stat-number {
+  margin: 0.6rem 0 0;
+  font-size: 2.2rem; /* Larger number */
+  font-weight: 600;
+  color: #1976d2;
+}
+
+
+.grid-item {
+  background: white;
+  border-radius: 12px;
+  padding: 1.8rem; /* More padding */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-item h2 {
+  margin: 0 0 1.2rem; /* More space below heading */
+  color: #333;
+  font-size: 1.4rem; /* Larger heading */
+}
+
+.appointments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem; /* More space between items */
+  flex: 1;
+  overflow-y: auto;
+  max-height: 450px; /* Taller list */
+}
+
+.appointment-card {
+  display: flex;
+  align-items: center;
+  padding: 1.2rem; /* More padding */
+  background: #f8f9fa;
+  border-radius: 8px;
+  gap: 1.2rem; /* More space between elements */
+}
+
+.appointment-time {
+  font-weight: 600;
+  color: #1976d2;
+  min-width: 90px; /* Slightly wider */
+  font-size: 1.05rem; /* Larger text */
+}
+
+.appointment-details {
+  flex: 1;
+}
+
+.appointment-details h4 {
+  margin: 0;
+  color: #333;
+  font-size: 1.1rem; /* Larger text */
+}
+
+.appointment-details p {
+  margin: 0.3rem 0;
+  color: #666;
+  font-size: 1rem; /* Larger text */
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem; /* Larger badge */
+  border-radius: 12px;
+  font-size: 0.85rem; /* Larger text */
+  font-weight: 500;
+}
+
+.status-badge.pending {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.status-badge.confirmed {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge.cancelled {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.status-badge.completed {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.appointment-actions {
+  display: flex;
+  gap: 0.8rem; /* More space between buttons */
+}
+
+.action-btn {
+  padding: 0.6rem 1.2rem; /* Larger buttons */
+  border: none;
+  border-radius: 6px;
+  background: #e3f2fd;
+  color: #1976d2;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.95rem; /* Larger text */
+}
+
+.action-btn:hover {
+  background: #bbdefb;
+}
+
+.chart-container {
+  height: 350px;
+  width: 100%;
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem; /* More space between items */
+  flex: 1;
+  overflow-y: auto;
+  max-height: 450px; /* Taller list */
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem; /* More space between elements */
+  padding: 1rem; /* More padding */
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.activity-icon {
+  width: 46px; /* Larger icon */
+  height: 46px;
+  border-radius: 50%;
+  background: #e3f2fd;
+  color: #1976d2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activity-details {
+  flex: 1;
+}
+
+.activity-details p {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.05rem; /* Larger text */
+}
+
+.activity-details small {
+  color: #666;
+  font-size: 0.9rem; /* Larger text */
+}
+
+.no-data {
+  text-align: center;
+  color: #666;
+  padding: 2.5rem; /* More padding */
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 1.1rem; /* Larger text */
+}
+
+/* Let's make sure Header is properly positioned */
+Header {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: white; /* Added white background */
+}
+
+/* Reset body/html margins */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  height: 100%;
+  width: 100%;
+  background-color: white; /* Added white background */
+}
+
+@media screen and (min-width: 1441px) {
+  .dashboard-container {
+    width: 100%;
+    max-width: none;
+    padding: 32px 48px;
+  }
+  .sidebar-collapsed .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr); /* Keep 3 columns but each gets more space */
+  }
+  
+  .sidebar-collapsed .dashboard-container {
+    padding: 32px 48px; /* More padding when sidebar is collapsed */
+  }
+}
+
+/* Medium-large screens */
+@media screen and (max-width: 1400px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Adjust dashboard grid for collapsed sidebar on medium screens */
+  .sidebar-collapsed .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr); /* Keep 3 columns when sidebar is collapsed */
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr); /* Normal view has 2 columns */
+  }
+}
+
+/* Medium screens */
+@media screen and (max-width: 1200px) {
+  .sidebar-collapsed .stats-grid {
+    grid-template-columns: repeat(4, 1fr); /* Keep 4 columns when sidebar is collapsed */
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr); /* Normal view has 2 columns */
+  }
+
+  .sidebar-collapsed .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr); /* Keep 3 columns when sidebar is collapsed */
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr); /* Normal view has 2 columns */
+  }
+}
+
+/* Tablet and smaller desktop */
+@media screen and (max-width: 1024px) {
+  .sidebar-collapsed .main-content {
+    margin-left: 60px; /* Make collapsed sidebar even smaller on tablets */
+    width: calc(100% - 60px);
+  }
+  
+  .quick-actions {
+    flex-wrap: wrap;
+  }
+
+  .action-button {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .dashboard-header {
+    padding: 1.5rem;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .main-content,
+  .sidebar-collapsed .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .doctor-profile {
+    width: 100%;
+  }
+
+  .quick-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chart-container {
+    height: 250px;
+  }
+  
+  .doctor-welcome h1 {
+    font-size: 1.75rem;
+  }
+
+  .header-decoration,
+  .header-decoration-2 {
+    transform: scale(0.8);
+  }
+  
+  .dashboard-container {
+    padding: 16px;
+  }
+   
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.collapsed {
+    transform: translateX(-100%);
+  }
+}
+@media screen and (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .doctor-profile {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .doctor-info h1 {
+    font-size: 1.25rem;
+  }
+
+  .quick-actions {
+    flex-direction: column;
+  }
+
+  .action-button {
+    width: 100%;
+  }
+
+  .appointment-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .appointment-time {
+    margin-bottom: 0.5rem;
+  }
+
+  .appointment-actions {
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
+  .chart-container {
+    height: 200px;
+  }
+  
+  .dashboard-header {
+    padding: 1rem;
+  }
+
+  .doctor-welcome h1 {
+    font-size: 1.5rem;
+  }
+
+  .specialty {
+    font-size: 1rem;
+  }
+
+  .header-decoration,
+  .header-decoration-2 {
+    transform: scale(0.6);
+  }
 }
 
 .error-message {
@@ -81,6 +576,8 @@ tr:hover {
   padding: 12px;
   border-radius: 6px;
   margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .loading {
@@ -90,24 +587,5 @@ tr:hover {
   height: 100vh;
   font-size: 1.2rem;
   color: #666;
-}
-
-@media (max-width: 768px) {
-  .main-content {
-    margin-left: 80px;
-    width: calc(100% - 80px);
-    padding: 16px;
-  }
-  
-  .dashboard-container {
-    padding: 16px;
-  }
-  
-  .doctor-info, .patients-list {
-    padding: 16px;
-  }
-  
-  th, td {
-    padding: 8px;
-  }
+  width: 100%;
 }

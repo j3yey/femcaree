@@ -1,0 +1,179 @@
+.app-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 250px; /* Default sidebar width */
+    height: 60px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease; /* Match sidebar transition */
+    z-index: 1000;
+    width: calc(100% - 250px); /* Explicitly set width */
+}
+
+/* When sidebar is collapsed */
+.app-header.header-collapsed {
+    left: 80px;
+    width: calc(100% - 80px);
+}
+/* Default expanded state */
+.app-header:not(.header-collapsed) {
+    width: calc(100% - 250px);
+}
+
+.header-left h1 {
+    margin: 0;
+    color: #ff00bf;
+    font-size: 1.5rem;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-left: 15px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.date-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4b5563;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.calendar-icon {
+    color: #ff00bf;
+    font-size: 1rem;
+}
+
+.current-date {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Large screens */
+@media screen and (min-width: 1440px) {
+    .app-header {
+        padding: 0.5rem 3rem;
+    }
+}
+
+/* Medium-sized screens */
+@media screen and (max-width: 1200px) {
+    .app-header {
+        padding: 0.5rem 1.5rem;
+    }
+
+    .header-left h1 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Tablet screens */
+@media screen and (max-width: 1024px) {
+    .app-header {
+        padding: 0.5rem 1.25rem;
+    }
+
+    .current-date {
+        max-width: 300px;
+    }
+}
+
+/* Small tablet and large mobile screens */
+@media screen and (max-width: 768px) {
+    .app-header,
+    .app-header.header-collapsed {
+        left: 80px;
+        width: calc(100% - 80px);
+        padding: 0.5rem 1rem;
+        height: 50px;
+    }
+
+    .header-left h1 {
+        font-size: 1.2rem;
+        margin-left: 10px;
+    }
+
+    .current-date {
+        max-width: 200px;
+        font-size: 0.8rem;
+    }
+
+    .calendar-icon {
+        font-size: 0.9rem;
+    }
+
+    /* When sidebar is fully collapsed on mobile */
+    .sidebar-collapsed .app-header {
+        left: 0;
+        width: 100%;
+    }
+}
+
+/* Mobile screens */
+@media screen and (max-width: 480px) {
+    .app-header,
+    .app-header.header-collapsed {
+        left: 0;
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .header-left h1 {
+        font-size: 1.1rem;
+        margin-left: 5px;
+    }
+
+    .current-date {
+        max-width: 150px;
+        font-size: 0.75rem;
+    }
+
+    .calendar-icon {
+        font-size: 0.8rem;
+    }
+}
+
+/* Very small screens */
+@media screen and (max-width: 360px) {
+    .app-header {
+        padding: 0.5rem;
+    }
+
+    .header-left h1 {
+        font-size: 1rem;
+    }
+
+    .current-date {
+        max-width: 120px;
+    }
+
+    .date-info {
+        gap: 0.25rem;
+    }
+}
+
+/* Handle landscape mode on mobile */
+@media screen and (max-height: 480px) and (orientation: landscape) {
+    .app-header {
+        height: 45px;
+    }
+
+    .header-left h1 {
+        font-size: 1rem;
+    }
+
+    .current-date {
+        font-size: 0.75rem;
+    }
+}
