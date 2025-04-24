@@ -25,12 +25,9 @@ export default function AppointmentBooking() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
     const savedState = localStorage.getItem('sidebarCollapsed');
     return savedState ? JSON.parse(savedState) : false;
-    
   });
   const [isMobileSidebarVisible, setIsMobileSidebarVisible] = useState(false);
   const [loadingStates, setLoadingStates] = useState({});
-  
-  // Add polling interval state
   const [pollingInterval, setPollingInterval] = useState(null);
 
   // Define fixed time slots with UTC awareness
@@ -64,6 +61,7 @@ export default function AppointmentBooking() {
       );
     });
   };
+
   // Save sidebar state to localStorage when it changes
   useEffect(() => {
     localStorage.setItem('sidebarCollapsed', JSON.stringify(isSidebarCollapsed));
@@ -267,21 +265,6 @@ export default function AppointmentBooking() {
       }
     }
   };
-
-  useEffect(() => {
-    let interval
-    if (selectedDoctor && selectedDate) {
-      // Refresh available slots every 30 seconds
-      interval = setInterval(() => {
-        fetchAvailableSlots()
-      }, 30000) // 30 seconds
-    }
-    return () => {
-      if (interval) {
-        clearInterval(interval)
-      }
-    }
-  }, [selectedDoctor, selectedDate])
 
   const handleBooking = async (e) => {
     e.preventDefault();
@@ -550,6 +533,7 @@ export default function AppointmentBooking() {
   return (
     <div className="booking-page">
       <Header isSidebarCollapsed={isSidebarCollapsed} />
+      
       <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''} ${isMobileSidebarVisible ? 'mobile-visible' : ''}`}>
         <Sidenav 
           onSignOut={handleSignOut}
@@ -566,42 +550,21 @@ export default function AppointmentBooking() {
           
           {renderUpcomingAppointments()}
           
-          <div className="booking-grid">
-            <div className="left-section" style={{ marginTop: 0 }}>
-              <h3 className="section-title">Select Doctor</h3>
-              {renderDoctorCards()}
+          <div className="booking-layout">
+            <div className="booking-main-content">
+              <section className="doctor-selection-section">
+                <h3 className="section-title">Select Doctor</h3>
+                {renderDoctorCards()}
+              </section>
               
-              <div className="calendar-section">
-                <h3 className="section-title">Select Date</h3>
-                <Calendar
-                  onChange={date => {
-                    setCalendarDate(date);
-                    setSelectedDate(format(date, 'yyyy-MM-dd'));
-                    setSelectedSlot(null);
-                  }}
-                  value={calendarDate}
-                  minDate={new Date()}
-                  maxDate={addWeeks(new Date(), 2)}
-                  tileDisabled={({ date }) => {
-                    const dayOfWeek = date.getDay();
-                    return dayOfWeek === 0 || dayOfWeek === 6; // Disable weekends
-                  }}
-                  tileClassName={({ date }) => {
-                    const formattedDate = format(date, 'yyyy-MM-dd');
-                    const hasAppointment = upcomingAppointments.some(
-                      apt => apt.appointment_date === formattedDate
-                    );
-                    return hasAppointment ? 'has-appointment' : null;
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="right-section-container">
-              <div className="right-section-content">
-                <div className="right-section-main">
-                  {renderTimeSlots()}
-
+              <section className="time-selection-section">
+                <h3 className="section-title">Available Times</h3>
+                {renderTimeSlots()}
+              </section>
+              
+              <section className="booking-form-section">
+                <h3 className="section-title">Complete Booking</h3>
+                <div className="booking-form">
                   <div className="form-group">
                     <label htmlFor="reason">Reason for Visit</label>
                     <textarea
@@ -626,10 +589,37 @@ export default function AppointmentBooking() {
                     {loading ? 'Booking...' : 'Book Appointment'}
                   </button>
                 </div>
-                
-                <div className="right-section-summary">
-                  {renderAppointmentSummary()}
-                </div>
+              </section>
+            </div>
+            
+            <div className="booking-sidebar">
+              <div className="calendar-widget">
+                <h3 className="section-title">Select Date</h3>
+                <Calendar
+                  onChange={date => {
+                    setCalendarDate(date);
+                    setSelectedDate(format(date, 'yyyy-MM-dd'));
+                    setSelectedSlot(null);
+                  }}
+                  value={calendarDate}
+                  minDate={new Date()}
+                  maxDate={addWeeks(new Date(), 2)}
+                  tileDisabled={({ date }) => {
+                    const dayOfWeek = date.getDay();
+                    return dayOfWeek === 0 || dayOfWeek === 6; // Disable weekends
+                  }}
+                  tileClassName={({ date }) => {
+                    const formattedDate = format(date, 'yyyy-MM-dd');
+                    const hasAppointment = upcomingAppointments.some(
+                      apt => apt.appointment_date === formattedDate
+                    );
+                    return hasAppointment ? 'has-appointment' : null;
+                  }}
+                />
+              </div>
+              
+              <div className="summary-widget">
+                {renderAppointmentSummary()}
               </div>
             </div>
           </div>

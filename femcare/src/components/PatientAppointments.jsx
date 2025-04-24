@@ -173,6 +173,10 @@ export default function PatientAppointments() {
     setSearchTerm(event.target.value)
   }
 
+  const getStatusBadgeClass = (status) => {
+    return `status-badge ${status}`
+  }
+
   if (loading) {
     return (
       <div className={`appointments-container ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
@@ -208,7 +212,6 @@ export default function PatientAppointments() {
             className="search-input"
           />
         </div>
-        
         
         <div className="appointments-layout">
           <div className="appointments-box-container">
@@ -254,7 +257,7 @@ export default function PatientAppointments() {
                 </div>
               ))}
 
-{filteredAppointments.length === 0 && (
+              {filteredAppointments.length === 0 && (
                 <div className="no-appointments">
                   {searchTerm ? "No appointments found matching your search" : "No appointments found"}
                 </div>
@@ -264,140 +267,140 @@ export default function PatientAppointments() {
 
 
           <div className={`appointment-details-container ${selectedAppointment ? 'show' : ''}`}>
-  {selectedAppointment ? (
-    <div className="appointment-details">
-      <div className="details-header">
-        <h2>Patient Information</h2>
-        <button 
-          className="close-details"
-          onClick={() => setSelectedAppointment(null)}
-        >
-          ×
-        </button>
-      </div>
+            {selectedAppointment ? (
+              <div className="appointment-details">
+                <div className="details-header">
+                  <h2>Patient Information</h2>
+                  <button 
+                    className="close-details"
+                    onClick={() => setSelectedAppointment(null)}
+                  >
+                    ×
+                  </button>
+                </div>
 
-      <div className="patient-details-card">
-        <div className="patient-header">
-          <div className="large-avatar">
-            {selectedAppointment.patients?.profile_picture_path ? (
-              <img
-                src={getAvatarUrl(selectedAppointment.patients.profile_picture_path)}
-                alt={selectedAppointment.patients.full_name}
-                className="large-avatar-image"
-              />
-            ) : (
-              <div className="large-avatar-placeholder">
-                <span className="large-avatar-initial">
-                  {selectedAppointment.patients?.full_name.charAt(0)}
-                </span>
-              </div>
-            )}
-          </div>
-          <div className="patient-main-info">
-            <h3>{selectedAppointment.patients?.full_name}</h3>
-            <p>Email: {selectedAppointment.patients?.email}</p>
-            <p>Phone: {selectedAppointment.patients?.phone_number}</p>
-            <p>Date of Birth: {selectedAppointment.patients?.date_of_birth ? 
-              format(new Date(selectedAppointment.patients.date_of_birth), 'MMMM d, yyyy') : 'Not provided'}</p>
-          </div>
-        </div>
-
-        <div className="appointment-details-section">
-          <h4 className="section-title">Appointment Details</h4>
-          <div className="detail-row">
-            <span className="detail-label">Date</span>
-            <span className="detail-value">
-              {format(new Date(selectedAppointment.appointment_date), 'MMMM d, yyyy')}
-            </span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">Time</span>
-            <span className="detail-value">
-              {format(new Date(`2000-01-01T${selectedAppointment.start_time}`), 'h:mm a')} - 
-              {format(new Date(`2000-01-01T${selectedAppointment.end_time}`), 'h:mm a')}
-            </span>
-          </div>
-          <div className="detail-row">
-                    <span className="detail-label">Status</span>
-                    <div className="status-update-container">
-                      <select
-                        className="status-select"
-                        value={selectedAppointment.status}
-                        onChange={(e) => handleStatusUpdate(selectedAppointment.id, e.target.value)}
-                        disabled={updatingStatus}
-                      >
-                        <option value="pending">Pending</option>
-                        <option value="confirmed">Confirmed</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
-                      </select>
-                      <span className={`status-badge ${selectedAppointment.status}`}>
-                        {selectedAppointment.status.charAt(0).toUpperCase() + 
-                         selectedAppointment.status.slice(1)}
-                      </span>
+                <div className="patient-details-card">
+                  <div className="patient-header">
+                    <div className="large-avatar">
+                      {selectedAppointment.patients?.profile_picture_path ? (
+                        <img
+                          src={getAvatarUrl(selectedAppointment.patients.profile_picture_path)}
+                          alt={selectedAppointment.patients.full_name}
+                          className="large-avatar-image"
+                        />
+                      ) : (
+                        <div className="large-avatar-placeholder">
+                          <span className="large-avatar-initial">
+                            {selectedAppointment.patients?.full_name.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="patient-main-info">
+                      <h3>{selectedAppointment.patients?.full_name}</h3>
+                      <p>Email: {selectedAppointment.patients?.email}</p>
+                      <p>Phone: {selectedAppointment.patients?.phone_number}</p>
+                      <p>Date of Birth: {selectedAppointment.patients?.date_of_birth ? 
+                        format(new Date(selectedAppointment.patients.date_of_birth), 'MMMM d, yyyy') : 'Not provided'}</p>
                     </div>
                   </div>
-                  {updateError && (
-                    <div className="error-message">
-                      {updateError}
+
+                  <div className="appointment-details-section">
+                    <h4 className="section-title">Appointment Details</h4>
+                    <div className="detail-row">
+                      <span className="detail-label">Date</span>
+                      <span className="detail-value">
+                        {format(new Date(selectedAppointment.appointment_date), 'MMMM d, yyyy')}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Time</span>
+                      <span className="detail-value">
+                        {format(new Date(`2000-01-01T${selectedAppointment.start_time}`), 'h:mm a')} - 
+                        {format(new Date(`2000-01-01T${selectedAppointment.end_time}`), 'h:mm a')}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Status</span>
+                      <div className="status-update-container">
+                        <select
+                          className="status-select"
+                          value={selectedAppointment.status}
+                          onChange={(e) => handleStatusUpdate(selectedAppointment.id, e.target.value)}
+                          disabled={updatingStatus}
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="confirmed">Confirmed</option>
+                          <option value="completed">Completed</option>
+                          <option value="cancelled">Cancelled</option>
+                        </select>
+                        <span className={getStatusBadgeClass(selectedAppointment.status)}>
+                          {selectedAppointment.status.charAt(0).toUpperCase() + 
+                           selectedAppointment.status.slice(1)}
+                        </span>
+                      </div>
+                    </div>
+                    {updateError && (
+                      <div className="error-message">
+                        {updateError}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="medical-info-section">
+                    <h4 className="section-title">Medical Information</h4>
+                    <div className="detail-row">
+                      <span className="detail-label">Known Allergies</span>
+                      <span className="detail-value">{selectedAppointment.patients?.known_allergies || 'None reported'}</span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Current Medications</span>
+                      <span className="detail-value">{selectedAppointment.patients?.current_medications || 'None reported'}</span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Last Menstrual Period</span>
+                      <span className="detail-value">
+                        {selectedAppointment.patients?.last_menstrual_period ? 
+                          format(new Date(selectedAppointment.patients.last_menstrual_period), 'MMMM d, yyyy') : 'Not provided'}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Pregnancies</span>
+                      <span className="detail-value">{selectedAppointment.patients?.pregnancies_count || '0'}</span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Live Births</span>
+                      <span className="detail-value">{selectedAppointment.patients?.live_births_count || '0'}</span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Last Pap Smear</span>
+                      <span className="detail-value">
+                        {selectedAppointment.patients?.last_pap_smear ? 
+                          format(new Date(selectedAppointment.patients.last_pap_smear), 'MMMM d, yyyy') : 'Not provided'}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Pap Smear Result</span>
+                      <span className="detail-value">{selectedAppointment.patients?.last_pap_smear_result || 'Not provided'}</span>
+                    </div>
+                  </div>
+
+                  {selectedAppointment.reason && (
+                    <div className="reason-section">
+                      <h4 className="section-title">Reason for Visit</h4>
+                      <div className="detail-row">
+                        <span className="detail-value">{selectedAppointment.reason}</span>
+                      </div>
                     </div>
                   )}
                 </div>
-
-        <div className="medical-info-section">
-          <h4 className="section-title">Medical Information</h4>
-          <div className="detail-row">
-            <span className="detail-label">Known Allergies</span>
-            <span className="detail-value">{selectedAppointment.patients?.known_allergies || 'None reported'}</span>
+              </div>
+            ) : (
+              <div className="no-selection-message">
+                <p>Select an appointment to view details</p>
+              </div>
+            )}
           </div>
-          <div className="detail-row">
-            <span className="detail-label">Current Medications</span>
-            <span className="detail-value">{selectedAppointment.patients?.current_medications || 'None reported'}</span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">Last Menstrual Period</span>
-            <span className="detail-value">
-              {selectedAppointment.patients?.last_menstrual_period ? 
-                format(new Date(selectedAppointment.patients.last_menstrual_period), 'MMMM d, yyyy') : 'Not provided'}
-            </span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">Pregnancies</span>
-            <span className="detail-value">{selectedAppointment.patients?.pregnancies_count || '0'}</span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">Live Births</span>
-            <span className="detail-value">{selectedAppointment.patients?.live_births_count || '0'}</span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">Last Pap Smear</span>
-            <span className="detail-value">
-              {selectedAppointment.patients?.last_pap_smear ? 
-                format(new Date(selectedAppointment.patients.last_pap_smear), 'MMMM d, yyyy') : 'Not provided'}
-            </span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">Pap Smear Result</span>
-            <span className="detail-value">{selectedAppointment.patients?.last_pap_smear_result || 'Not provided'}</span>
-          </div>
-        </div>
-
-        {selectedAppointment.reason && (
-          <div className="reason-section">
-            <h4 className="section-title">Reason for Visit</h4>
-            <div className="detail-row">
-              <span className="detail-value">{selectedAppointment.reason}</span>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  ) : (
-    <div className="no-selection-message">
-      <p>Select an appointment to view details</p>
-    </div>
-  )}
-</div>
         </div>
       </div>
     </div>

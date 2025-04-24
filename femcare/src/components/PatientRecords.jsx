@@ -4,10 +4,12 @@ import { supabase } from '../supabaseClient';
 import DoctorSidenav from './DoctorSidenav';
 import '../styles/PatientRecords.css';
 import Header from './Header';
-import { FaExclamationCircle, FaDownload, FaFileMedical, FaChevronRight } from 'react-icons/fa';
+import { FaExclamationCircle, FaDownload, FaFileMedical, FaChevronRight, FaSearch } from 'react-icons/fa';
 
 export default function PatientRecords() {
   const [patients, setPatients] = useState([]);
+  const [filteredPatients, setFilteredPatients] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
@@ -88,6 +90,7 @@ export default function PatientRecords() {
         }
         
         setPatients(patientsWithRecords);
+        setFilteredPatients(patientsWithRecords);
       } catch (err) {
         console.error('Error fetching patient data:', err);
         setError('Failed to load patient data. Please try again later.');
@@ -98,6 +101,23 @@ export default function PatientRecords() {
     
     fetchPatients();
   }, []);
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+    
+    if (term.trim() === '') {
+      setFilteredPatients(patients);
+    } else {
+      const filtered = patients.filter(patient => 
+        patient.full_name.toLowerCase().includes(term) ||
+        patient.email.toLowerCase().includes(term) ||
+        (patient.phone_number && patient.phone_number.toLowerCase().includes(term))
+      );
+      setFilteredPatients(filtered);
+    }
+  };
 
   const handlePatientSelect = (patient) => {
     setSelectedPatient(patient);
@@ -130,6 +150,12 @@ export default function PatientRecords() {
       console.error('Error downloading file:', err);
       alert('Failed to download file');
     }
+  };
+
+  // Clear search
+  const handleClearSearch = () => {
+    setSearchTerm('');
+    setFilteredPatients(patients);
   };
 
   return (
@@ -178,24 +204,54 @@ export default function PatientRecords() {
               {(showPatientsList || !mobileView) && (
                 <div className="patients-list-container">
                   <h2 className="panel-title">Patients</h2>
+                  
+                  {/* Search bar */}
+                  <div className="search-container">
+                    <div className="search-input-wrapper">
+                      <input
+                        type="text"
+                        className="search-input"
+                        placeholder="Search patients..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        
+                      />
+                      {searchTerm && (
+                        <button 
+                          className="clear-search" 
+                          onClick={handleClearSearch}
+                          aria-label="Clear search"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  
                   <div className="patients-scroll-container">
-                    {patients.map((patient) => (
-                      <div 
-                        key={patient.id} 
-                        className={`patient-list-item ${selectedPatient?.id === patient.id ? 'selected' : ''}`}
-                        onClick={() => handlePatientSelect(patient)}
-                      >
-                        <div className="patient-list-info">
-                          <h3>{patient.full_name}</h3>
-                          <p>{patient.email}</p>
-                          <p className="phone-number">{patient.phone_number}</p>
-                        </div>
-                        <div className="patient-list-meta">
-                          <span className="record-badge">{patient.records.length} record(s)</span>
-                          <FaChevronRight className="chevron-right" />
-                        </div>
+                    {filteredPatients.length === 0 ? (
+                      <div className="no-search-results">
+                        <p>No patients match your search.</p>
                       </div>
-                    ))}
+                    ) : (
+                      filteredPatients.map((patient) => (
+                        <div 
+                          key={patient.id} 
+                          className={`patient-list-item ${selectedPatient?.id === patient.id ? 'selected' : ''}`}
+                          onClick={() => handlePatientSelect(patient)}
+                        >
+                          <div className="patient-list-info">
+                            <h3>{patient.full_name}</h3>
+                            <p>{patient.email}</p>
+                            <p className="phone-number">{patient.phone_number}</p>
+                          </div>
+                          <div className="patient-list-meta">
+                            <span className="record-badge">{patient.records.length} record(s)</span>
+                            <FaChevronRight className="chevron-right" />
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               )}

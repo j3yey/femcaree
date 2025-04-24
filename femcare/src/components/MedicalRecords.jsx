@@ -15,7 +15,9 @@ import {
   FaFileWord,
   FaSearch,
   FaInfoCircle,
-  FaTimes
+  FaTimes,
+  FaFolder,
+  FaHeart
 } from 'react-icons/fa'; 
 import { motion, AnimatePresence } from 'framer-motion';
 import '../styles/MedicalRecords.css';
@@ -33,22 +35,19 @@ export default function MedicalRecords() {
     const [toastType, setToastType] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const [showMobileSearch, setShowMobileSearch] = useState(false);
     const fileInputRef = useRef(null);
 
-    // Add handler for sidebar collapse
+    // Handler functions
     const handleSidebarCollapse = (collapsed) => {
         setIsSidebarCollapsed(collapsed);
     };
 
-    // Enhanced toast notification function
     const showNotification = (msg, type = 'success') => {
         setToastMessage(msg);
         setToastType(type);
         setShowToast(true);
-        
-        setTimeout(() => {
-            setShowToast(false);
-        }, 5000);
+        setTimeout(() => setShowToast(false), 5000);
     };
 
     // Fetch user's medical records on component mount
@@ -279,320 +278,311 @@ export default function MedicalRecords() {
         setSearchTerm('');
     };
     
+    // Toggle mobile search
+    const toggleMobileSearch = () => {
+        setShowMobileSearch(!showMobileSearch);
+        if (!showMobileSearch) {
+            setSearchTerm('');
+        }
+    };
+    
     // Trigger file input click
     const triggerFileInput = () => {
         fileInputRef.current.click();
     };
 
-    // Table loading skeleton component
-    const TableSkeleton = () => (
-        <div className="overflow-x-auto rounded-xl border border-gray-100">
-            <table className="min-w-full divide-y divide-gray-200">
-                <thead>
-                    <tr className="bg-gray-50">
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                            File Name
-                        </th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                            Type
-                        </th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                            Size
-                        </th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                            Uploaded
-                        </th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                            Actions
-                        </th>
-                    </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                    {[...Array(3)].map((_, index) => (
-                        <tr key={index}>
-                            <td className="px-6 py-4">
-                                <div className="h-6 w-48 loading-skeleton rounded"></div>
-                            </td>
-                            <td className="px-6 py-4">
-                                <div className="h-6 w-24 loading-skeleton rounded-full"></div>
-                            </td>
-                            <td className="px-6 py-4">
-                                <div className="h-6 w-16 loading-skeleton rounded"></div>
-                            </td>
-                            <td className="px-6 py-4">
-                                <div className="h-6 w-32 loading-skeleton rounded"></div>
-                            </td>
-                            <td className="px-6 py-4">
-                                <div className="h-6 w-24 loading-skeleton rounded"></div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
-
-        return (
-            <div className="app-container">
-                <Sidenav onSignOut={signOut} onCollapsedChange={handleSidebarCollapse} />
-                <div className="main-wrapper">
-                    <Header isSidebarCollapsed={isSidebarCollapsed} />
-                    <div className="dashboard-container">
-                        <div className="main-content p-8 lg:p-12">
-                <div className="sticky top-0 bg-white z-10 pb-4">
-                    <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mb-8"
-                    >
-                        <h1 className="text-4xl font-bold text-gray-800 mb-3">Medical Records</h1>
-                        <hr className="border-gray-200 mb-6" />
-                        <p className="text-gray-600 text-lg">Securely manage and store your medical documents</p>
-                    </motion.div>
-                </div>
+    return (
+        <div className="app-wrapper">
+            <Sidenav onSignOut={signOut} onCollapsedChange={handleSidebarCollapse} />
+            <div className={`content-wrapper ${isSidebarCollapsed ? 'expanded' : ''}`}>
+                <Header isSidebarCollapsed={isSidebarCollapsed} />
                 
-                {/* Side by side layout container */}
-                <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Upload Section - Takes 40% width on large screens */}
-                    <motion.div 
-                        className="glass-card rounded-2xl mb-8 lg:mb-0 transition-all hover:shadow-lg lg:w-2/5"
-                        whileHover={{ scale: 1.005 }}
-                    >
-                        <div className="p-8">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-                                <FaCloudUploadAlt className="mr-3 text-blue-500 text-3xl" />
-                                Upload New Record
-                            </h2>
-                            <div 
-                                className={`upload-zone ${isDragging ? 'dropzone-active' : ''}`}
-                                onDragEnter={handleDrag}
-                                onDragLeave={handleDrag}
-                                onDragOver={handleDrag}
-                                onDrop={handleDrop}
-                                onClick={triggerFileInput}
+                <div className="content-container">
+                    <div className="box-container">
+                        <div className="medical-records-content">
+                            {/* Header Section */}
+                            <motion.div 
+                                className="page-header"
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5 }}
                             >
-                                <input
-                                    type="file"
-                                    id="file-upload"
-                                    ref={fileInputRef}
-                                    onChange={handleFileUpload}
-                                    disabled={uploading}
-                                    className="hidden"
-                                />
-                                <div className="flex items-center justify-center pointer-events-none">
-                                    <div className="text-center">
-                                        <FaUpload className={`mx-auto text-4xl text-blue-400 mb-4 ${isDragging ? 'animate-bounce' : ''}`} />
-                                        <p className="text-gray-700 font-medium mb-2">Drag and drop your file here</p>
-                                        <p className="text-gray-500 text-sm">or click to browse files</p>
-                                        <div className="mt-4 text-xs text-gray-400 flex items-center justify-center">
-                                            <FaInfoCircle className="mr-2" />
-                                            Supported files: PDF, DOC, DOCX, JPG, PNG
-                                        </div>
+                                <div className="header-content">
+                                    
+                                    <div className="header-actions">
+                                        
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <AnimatePresence>
-                                {uploading && (
-                                    <motion.div 
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="flex items-center gap-3 text-blue-500 mt-4 bg-blue-50 p-4 rounded-lg"
-                                    >
-                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
-                                        Uploading your file...
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    </motion.div>
-                    
-                    {/* Files List Section - Takes 60% width on large screens */}
-                    <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="glass-card2 rounded-2xl shadow-sm transition-all hover:shadow-lg lg:w-3/5"
-                    >
-                        <div className="p-8">
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                                <h2 className="text-2xl font-semibold text-gray-800 flex items-center mb-4 md:mb-0">
-                                    <FaFile className="mr-3 text-blue-500" />
-                                    Your Records
-                                </h2>
-                                
-                                {/* Search bar */}
-                                <div className="relative w-full md:w-64">
+                              
+                            </motion.div>
+
+                            {/* Search Bar - Mobile Optimized */}
+                            <div className="mobile-search-bar">
+                                <div className={`search-container ${showMobileSearch ? 'active' : ''}`}>
+                                    <FaSearch className="search-icon" />
                                     <input
                                         type="text"
-                                        placeholder="Search files..."
+                                        placeholder="Search your records..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="pl-10 pr-10 py-2 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     />
-                                    <FaSearch className="absolute left-3 top-3 text-gray-400" />
                                     {searchTerm && (
                                         <button 
                                             onClick={clearSearch}
-                                            className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                                            className="clear-search"
                                         >
                                             <FaTimes />
                                         </button>
                                     )}
                                 </div>
+                                <button className="search-toggle" onClick={toggleMobileSearch}>
+                                    {showMobileSearch ? <FaTimes /> : <FaSearch />}
+                                </button>
                             </div>
-                            
-                            {isLoading ? (
-                                <TableSkeleton />
-                            ) : filteredFiles.length === 0 ? (
+
+                            {/* Main Content Grid */}
+                            <div className="records-grid">
+                                {/* Upload Section */}
                                 <motion.div 
-                                    className="empty-state"
-                                    initial={{ scale: 0.95 }}
-                                    animate={{ scale: 1 }}
+                                    className="upload-section"
+                                    whileHover={{ scale: 1.005 }}
+                                    transition={{ type: "spring", stiffness: 300 }}
                                 >
-                                    {searchTerm ? (
-                                        <>
-                                            <div className="empty-state-icon">
-                                                <FaSearch className="mx-auto" />
+                                    <div className="upload-container">
+                                        <div 
+                                            className={`dropzone ${isDragging ? 'active' : ''}`}
+                                            onDragEnter={handleDrag}
+                                            onDragLeave={handleDrag}
+                                            onDragOver={handleDrag}
+                                            onDrop={handleDrop}
+                                            onClick={triggerFileInput}
+                                        >
+                                            <input
+                                                type="file"
+                                                ref={fileInputRef}
+                                                onChange={handleFileUpload}
+                                                disabled={uploading}
+                                                className="hidden-input"
+                                            />
+                                            <div className="dropzone-content">
+                                                <FaUpload className={`upload-icon ${isDragging ? 'bouncing' : ''}`} />
+                                                <h3>Drag & drop files here</h3>
+                                                <p>or click to browse files</p>
+                                                <div className="file-types">
+                                                    <div className="file-type-icon"><FaFilePdf title="PDF" /></div>
+                                                    <div className="file-type-icon"><FaFileWord title="DOC" /></div>
+                                                    <div className="file-type-icon"><FaFileImage title="Images" /></div>
+                                                </div>
                                             </div>
-                                            <h3 className="text-xl font-medium text-gray-900 mb-3">No Matching Records</h3>
-                                            <p className="text-gray-500 max-w-sm mx-auto">
-                                                We couldn't find any files matching "{searchTerm}".
-                                                Try a different search term or clear the search.
-                                            </p>
-                                            <button 
-                                                onClick={clearSearch}
-                                                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                                            >
-                                                Clear Search
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className="empty-state-icon">
-                                                <FaFile className="mx-auto" />
-                                            </div>
-                                            <h3 className="text-xl font-medium text-gray-900 mb-3">No Records Found</h3>
-                                            <p className="text-gray-500 max-w-sm mx-auto">
-                                                Start by uploading your first medical record. We support various file formats 
-                                                including PDF, DOC, DOCX, JPG, and PNG.
-                                            </p>
-                                            <button 
-                                                onClick={triggerFileInput}
-                                                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                                            >
-                                                Upload First Record
-                                            </button>
-                                        </>
-                                    )}
+                                        </div>
+                                    </div>
                                 </motion.div>
-                            ) : (
-                                <div className="overflow-x-auto rounded-xl border border-gray-100">
-                                    <table className="min-w-full divide-y divide-gray-200">
-                                        <thead>
-                                            <tr className="bg-gray-50">
-                                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                                    File Name
-                                                </th>
-                                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                                    Type
-                                                </th>
-                                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                                    Size
-                                                </th>
-                                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                                    Uploaded
-                                                </th>
-                                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                                    Actions
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-white divide-y divide-gray-200">
-                                            {filteredFiles.map((file, index) => (
-                                                <motion.tr 
-                                                    key={file.id}
-                                                    initial={{ opacity: 0, y: 20 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    transition={{ delay: index * 0.05 }}
-                                                    className="table-row"
+
+                                {/* Files List Section */}
+                                <motion.div 
+                                    className="files-section"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.5 }}
+                                >
+                                    <div className="files-container">
+                                        <div className="files-header">
+                                            <div className="desktop-search-bar">
+                                                <FaSearch className="search-icon" />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Search your records..."
+                                                    value={searchTerm}
+                                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                                />
+                                                {searchTerm && (
+                                                    <button 
+                                                        onClick={clearSearch}
+                                                        className="clear-search"
+                                                    >
+                                                        <FaTimes />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {isLoading ? (
+                                            <div className="loading-skeleton">
+                                                {[...Array(3)].map((_, i) => (
+                                                    <div key={i} className="skeleton-row">
+                                                        <div className="skeleton-cell w-40" />
+                                                        <div className="skeleton-cell w-20" />
+                                                        <div className="skeleton-cell w-20" />
+                                                        <div className="skeleton-cell w-30" />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : filteredFiles.length === 0 ? (
+                                            <div className="empty-state">
+                                                <FaFolder className="empty-icon" />
+                                                <h3>
+                                                    {searchTerm ? 'No matching records' : 'No records yet'}
+                                                </h3>
+                                                <p>
+                                                    {searchTerm 
+                                                        ? `We couldn't find any files matching "${searchTerm}"`
+                                                        : 'Upload your first medical record to get started'}
+                                                </p>
+                                                <button 
+                                                    onClick={searchTerm ? clearSearch : triggerFileInput}
+                                                    className="action-button primary"
                                                 >
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex items-center">
-                                                            <div className={`file-icon ${getFileIconClass(file.file_type)}`}>
-                                                                {getFileIcon(file.file_type)}
+                                                    {searchTerm ? 'Clear Search' : 'Upload First Record'}
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="files-table">
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th className="th-file">File Name</th>
+                                                            <th className="th-type">Type</th>
+                                                            <th className="th-size">Size</th>
+                                                            <th className="th-date">Uploaded</th>
+                                                            <th className="th-actions">Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {filteredFiles.map((file, index) => (
+                                                            <motion.tr 
+                                                                key={file.id}
+                                                                initial={{ opacity: 0, y: 20 }}
+                                                                animate={{ opacity: 1, y: 0 }}
+                                                                transition={{ delay: index * 0.05 }}
+                                                                className="file-row"
+                                                            >
+                                                                <td className="td-file">
+                                                                    <div className="file-info">
+                                                                        <div className={`file-icon ${getFileIconClass(file.file_type)}`}>
+                                                                            {getFileIcon(file.file_type)}
+                                                                        </div>
+                                                                        <span className="file-name">
+                                                                            {file.file_name}
+                                                                        </span>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="td-type">
+                                                                    <span className={`file-badge ${getFileTypeClass(file.file_type)}`}>
+                                                                        {file.file_type.split('/')[1].toUpperCase()}
+                                                                    </span>
+                                                                </td>
+                                                                <td className="td-size">{formatFileSize(file.file_size)}</td>
+                                                                <td className="td-date">{formatDate(file.created_at)}</td>
+                                                                <td className="td-actions">
+                                                                    <div className="file-actions">
+                                                                        <button
+                                                                            onClick={() => downloadFile(file.file_path, file.file_name)}
+                                                                            className="action-button download"
+                                                                            title="Download"
+                                                                        >
+                                                                            <FaDownload />
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={() => deleteFile(file.id, file.file_path, file.file_name)}
+                                                                            className="action-button delete"
+                                                                            title="Delete"
+                                                                        >
+                                                                            <FaTrash />
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </motion.tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                                
+                                                {/* Mobile Card View for Files */}
+                                                <div className="mobile-files-view">
+                                                    {filteredFiles.map((file, index) => (
+                                                        <motion.div 
+                                                            key={file.id}
+                                                            className="file-card"
+                                                            initial={{ opacity: 0, y: 20 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            transition={{ delay: index * 0.05 }}
+                                                        >
+                                                            <div className="file-card-header">
+                                                                <div className={`file-icon ${getFileIconClass(file.file_type)}`}>
+                                                                    {getFileIcon(file.file_type)}
+                                                                </div>
+                                                                <div className="file-card-info">
+                                                                    <h4 className="file-name">{file.file_name}</h4>
+                                                                    <div className="file-meta">
+                                                                        <span className={`file-badge ${getFileTypeClass(file.file_type)}`}>
+                                                                            {file.file_type.split('/')[1].toUpperCase()}
+                                                                        </span>
+                                                                        <span className="file-size">{formatFileSize(file.file_size)}</span>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <span className="text-sm font-medium text-gray-900">
-                                                                {file.file_name}
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <span className={`file-badge ${getFileTypeClass(file.file_type)}`}>
-                                                            {file.file_type.split('/')[1].toUpperCase()}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-6 py-4 text-sm text-gray-500">
-                                                        {formatFileSize(file.file_size)}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-sm text-gray-500">
-                                                        {formatDate(file.created_at)}
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex space-x-2">
-                                                            <button
-                                                                onClick={() => downloadFile(file.file_path, file.file_name)}
-                                                                className="btn-action btn-download"
-                                                                title="Download"
-                                                            >
-                                                                <FaDownload />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => deleteFile(file.id, file.file_path, file.file_name)}
-                                                                className="btn-action btn-delete"
-                                                                title="Delete"
-                                                            >
-                                                                <FaTrash />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </motion.tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
-                        </div>
-                    </motion.div>
-                </div>
-                
-                {/* Toast Notification */}
-                <AnimatePresence>
-                    {showToast && (
-                        <motion.div 
-                            initial={{ opacity: 0, x: 100 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 100 }}
-                            className={`toast ${toastType === 'error' ? 'toast-error' : 'toast-success'}`}
-                        >
-                            {toastType === 'error' ? (
-                                <FaTimes className="text-red-600" />
-                            ) : (
-                                <FaDownload className="text-green-600" />
-                            )}
-                            <span>{toastMessage}</span>
+                                                            <div className="file-card-footer">
+                                                                <div className="file-date">
+                                                                    <span className="date-label">Uploaded:</span>
+                                                                    {formatDate(file.created_at)}
+                                                                </div>
+                                                                <div className="file-actions">
+                                                                    <button
+                                                                        onClick={() => downloadFile(file.file_path, file.file_name)}
+                                                                        className="action-button download"
+                                                                        title="Download"
+                                                                    >
+                                                                        <FaDownload />
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => deleteFile(file.id, file.file_path, file.file_name)}
+                                                                        className="action-button delete"
+                                                                        title="Delete"
+                                                                    >
+                                                                        <FaTrash />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </motion.div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            </div>
+
+                            {/* Toast Notification */}
+                            <AnimatePresence>
+                                {showToast && (
+                                    <motion.div 
+                                        className={`toast-notification ${toastType}`}
+                                        initial={{ opacity: 0, y: 50 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 50 }}
+                                    >
+                                        <div className="toast-content">
+                                            {toastType === 'error' ? <FaTimes /> : <FaDownload />}
+                                            <span>{toastMessage}</span>
+                                            <button onClick={() => setShowToast(false)} className="toast-close">
+                                                <FaTimes />
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                            
+                            {/* FAB for mobile upload */}
                             <button 
-                                onClick={() => setShowToast(false)} 
-                                className="ml-auto text-gray-500 hover:text-gray-700"
+                                className="mobile-upload-fab"
+                                onClick={triggerFileInput}
+                                disabled={uploading}
                             >
-                                <FaTimes size={14} />
+                                <FaCloudUploadAlt />
                             </button>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        </div>
         </div>
     );
 }

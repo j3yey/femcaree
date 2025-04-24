@@ -198,7 +198,6 @@ function PatientsTable({ patients, onSelectPatient, searchTerm, onSearchChange, 
               ×
             </button>
           )}
-          <span className="search-icon">🔍</span>
         </div>
         <div className="search-results-count">
           {patients.length === totalPatients 
