@@ -573,7 +573,7 @@ export default function AppointmentBooking() {
               setError(null);
             }}
           >
-            <h4>Dr. {doctor.full_name}</h4>
+            <h4>{doctor.full_name}</h4>
             <p>{doctor.specialty}</p>
           </div>
         ))}
@@ -637,7 +637,7 @@ export default function AppointmentBooking() {
         <h3>Appointment Summary</h3>
         <div className="summary-item">
           <span className="summary-label">Doctor:</span>
-          <span>Dr. {doctor?.full_name}</span>
+          <span>{doctor?.full_name}</span>
         </div>
         <div className="summary-item">
           <span className="summary-label">Specialty:</span>
