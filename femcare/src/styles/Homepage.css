@@ -1,0 +1,138 @@
+.home-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.home-container h1 {
+    color: black;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.description-container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin: 2rem 0;
+}
+
+.description-container p {
+    color: black;
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+.mission-vision-container {
+    display: flex;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.mission, .vision {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.mission h2, .vision h2 {
+    color: black;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.mission p, .vision p {
+    color: black;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.auth-options {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.auth-option {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.auth-option h2 {
+    color: #ffffff;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.auth-option p {
+    color: black;
+    margin-bottom: 1.5rem;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.auth-button {
+    background: linear-gradient(135deg, #246624, #1e4e1e);
+    color: black;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.auth-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.auth-button.secondary {
+    background: transparent;
+    border: 2px solid #ffffff;
+}
+
+.welcome-container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-top: 2rem;
+}
+
+.welcome-container h2 {
+    color: black;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .mission-vision-container,
+    .auth-options {
+        flex-direction: column;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+    }
+
+    .home-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+}

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import '../styles/Login.css';
+import '../styles/Homepage.css';
 
 export default function HomePage() {
   const { user, isPatient, isDoctor } = useAuth();
