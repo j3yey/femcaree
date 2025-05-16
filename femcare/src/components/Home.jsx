@@ -1,10 +1,10 @@
 // src/components/Home.jsx
-import { Link } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
-import '../styles/Login.css'
+import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import '../styles/Home.css';
 
 export default function Home() {
-  const { user, isPatient, isDoctor } = useAuth()
+  const { user, isPatient, isDoctor } = useAuth();
   
   return (
     <div className="home-container">
@@ -39,13 +39,6 @@ export default function Home() {
             </div>
           </div>
           
-          <div class="bubble"></div>
-          <div class="bubble"></div>
-<div class="bubble"></div>
-<div class="bubble"></div>
-<div class="bubble"></div>
-<div class="bubble"></div>
-
           <div className="auth-option">
             <h2>For Doctors</h2>
             <p>Access patient information, schedules, and medical records.</p>
@@ -55,6 +48,14 @@ export default function Home() {
           </div>
         </div>
       )}
+      
+      {/* Decorative bubbles */}
+      <div className="bubble"></div>
+      <div className="bubble"></div>
+      <div className="bubble"></div>
+      <div className="bubble"></div>
+      <div className="bubble"></div>
+      <div className="bubble"></div>
     </div>
-  )
+  );
 }

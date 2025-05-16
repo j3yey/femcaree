@@ -4,7 +4,36 @@ import { supabase } from '../supabaseClient';
 import DoctorSidenav from './DoctorSidenav';
 import '../styles/PatientRecords.css';
 import Header from './Header';
-import { FaExclamationCircle, FaDownload, FaFileMedical, FaChevronRight, FaSearch } from 'react-icons/fa';
+import { 
+  FaUser, 
+  FaExclamationCircle, 
+  FaDownload, 
+  FaFileMedical, 
+  FaChevronRight, 
+  FaSearch, 
+  FaPhone, 
+  FaCalendarAlt, 
+  FaNotesMedical, 
+  FaAllergies, 
+  FaPills, 
+  FaFemale, 
+  FaFileAlt,
+  FaArrowLeft
+} from 'react-icons/fa';
+
+// Add this function before the PatientRecords component
+const getAvatarUrl = (profilePicturePath) => {
+  if (!profilePicturePath) return null;
+  try {
+    const { data } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(profilePicturePath);
+    return data?.publicUrl || null;
+  } catch (error) {
+    console.error('Error getting avatar URL:', error);
+    return null;
+  }
+};
 
 export default function PatientRecords() {
   const [patients, setPatients] = useState([]);
@@ -16,6 +45,8 @@ export default function PatientRecords() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileView, setMobileView] = useState(window.innerWidth < 768);
   const [showPatientsList, setShowPatientsList] = useState(true);
+  const [recordSearchTerm, setRecordSearchTerm] = useState('');
+  const [filteredRecords, setFilteredRecords] = useState([]);
   const navigate = useNavigate();
 
   // Handler for sidebar toggle
@@ -69,7 +100,10 @@ export default function PatientRecords() {
         setLoading(true);
         const { data: patientsData, error: patientsError } = await supabase
           .from('patients')
-          .select('*');
+          .select(`
+            *,
+            profile_picture_path
+          `);
         
         if (patientsError) throw patientsError;
         
@@ -119,6 +153,30 @@ export default function PatientRecords() {
     }
   };
 
+  const handleRecordSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setRecordSearchTerm(term);
+    
+    if (!selectedPatient) return;
+    
+    if (term.trim() === '') {
+      setFilteredRecords(selectedPatient.records);
+    } else {
+      const filtered = selectedPatient.records.filter(record => 
+        record.file_name.toLowerCase().includes(term) ||
+        record.file_type.toLowerCase().includes(term)
+      );
+      setFilteredRecords(filtered);
+    }
+  };
+
+  const handleClearRecordSearch = () => {
+    setRecordSearchTerm('');
+    if (selectedPatient) {
+      setFilteredRecords(selectedPatient.records);
+    }
+  };
+
   const handlePatientSelect = (patient) => {
     setSelectedPatient(patient);
     if (mobileView) {
@@ -158,6 +216,12 @@ export default function PatientRecords() {
     setFilteredPatients(patients);
   };
 
+  useEffect(() => {
+    if (selectedPatient) {
+      setFilteredRecords(selectedPatient.records);
+    }
+  }, [selectedPatient]);
+
   return (
     <div className={`layout ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <DoctorSidenav 
@@ -172,7 +236,8 @@ export default function PatientRecords() {
             <h1>Patient Records</h1>
             {mobileView && selectedPatient && !showPatientsList && (
               <button className="back-button" onClick={handleBackToList}>
-                Back to List
+                <FaArrowLeft />
+                <span>Back to List</span>
               </button>
             )}
           </div>
@@ -203,18 +268,22 @@ export default function PatientRecords() {
               {/* Patients List Panel */}
               {(showPatientsList || !mobileView) && (
                 <div className="patients-list-container">
-                  <h2 className="panel-title">Patients</h2>
+                  <h2 className="panel-title">
+                    <FaUser />
+                    <span>Patients</span>
+                  </h2>
                   
                   {/* Search bar */}
                   <div className="search-container">
                     <div className="search-input-wrapper">
+                      <FaSearch className="search-icon" />
                       <input
                         type="text"
                         className="search-input"
                         placeholder="Search patients..."
                         value={searchTerm}
                         onChange={handleSearchChange}
-                        
+                        aria-label="Search patients"
                       />
                       {searchTerm && (
                         <button 
@@ -241,12 +310,35 @@ export default function PatientRecords() {
                           onClick={() => handlePatientSelect(patient)}
                         >
                           <div className="patient-list-info">
-                            <h3>{patient.full_name}</h3>
-                            <p>{patient.email}</p>
-                            <p className="phone-number">{patient.phone_number}</p>
+                            <div className="patient-list-avatar">
+                              {patient.profile_picture_path ? (
+                                <img
+                                  src={getAvatarUrl(patient.profile_picture_path)}
+                                  alt={patient.full_name}
+                                  className="avatar-image"
+                                />
+                              ) : (
+                                <div className="avatar-placeholder">
+                                  <span className="avatar-initial">
+                                    {patient.full_name.charAt(0)}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="patient-info-text">
+                              <h3>{patient.full_name}</h3>
+                              <p>{patient.email}</p>
+                              <p className="phone-number">
+                                <FaPhone />
+                                <span>{patient.phone_number || 'No phone number'}</span>
+                              </p>
+                            </div>
                           </div>
                           <div className="patient-list-meta">
-                            <span className="record-badge">{patient.records.length} record(s)</span>
+                            <span className="record-badge">
+                              <FaFileAlt />
+                              <span>{patient.records.length} record(s)</span>
+                            </span>
                             <FaChevronRight className="chevron-right" />
                           </div>
                         </div>
@@ -262,58 +354,129 @@ export default function PatientRecords() {
                   {selectedPatient ? (
                     <>
                       <div className="details-header">
-                        <h2 className="panel-title">{selectedPatient.full_name}'s Records</h2>
+                        <h2 className="panel-title">
+                          <FaFileMedical />
+                          <span>{selectedPatient.full_name}'s Records</span>
+                        </h2>
                         <div className="patient-summary">
-                          <p>{selectedPatient.email} • {selectedPatient.phone_number}</p>
-                          <span className="dob-label">DOB: {selectedPatient.date_of_birth ? new Date(selectedPatient.date_of_birth).toLocaleDateString() : 'Not provided'}</span>
+                          <p>
+                            <FaUser />
+                            <span>{selectedPatient.email}</span>
+                            {selectedPatient.phone_number && (
+                              <>
+                                {' • '}
+                                <FaPhone />
+                                <span>{selectedPatient.phone_number}</span>
+                              </>
+                            )}
+                          </p>
+                          <span className="dob-label">
+                            <FaCalendarAlt />
+                            <span>DOB: {selectedPatient.date_of_birth ? new Date(selectedPatient.date_of_birth).toLocaleDateString() : 'Not provided'}</span>
+                          </span>
                         </div>
                       </div>
                       
                       <div className="details-content">
                         <div className="medical-summary">
-                          <h3>Patient Overview</h3>
+                          <h3>
+                            <FaNotesMedical />
+                            <span>Patient Overview</span>
+                          </h3>
                           <div className="medical-grid">
                             <div className="medical-item">
-                              <span className="medical-label">Pregnancies</span>
+                              <span className="medical-label">
+                                <FaFemale />
+                                <span>Pregnancies</span>
+                              </span>
                               <span className="medical-value">{selectedPatient.pregnancies_count || 0}</span>
                             </div>
                             <div className="medical-item">
-                              <span className="medical-label">Live Births</span>
+                              <span className="medical-label">
+                                <FaFemale />
+                                <span>Live Births</span>
+                              </span>
                               <span className="medical-value">{selectedPatient.live_births_count || 0}</span>
                             </div>
                             <div className="medical-item">
-                              <span className="medical-label">Last Menstrual Period</span>
+                              <span className="medical-label">
+                                <FaCalendarAlt />
+                                <span>Last Menstrual Period</span>
+                              </span>
                               <span className="medical-value">{selectedPatient.last_menstrual_period ? new Date(selectedPatient.last_menstrual_period).toLocaleDateString() : 'Not provided'}</span>
                             </div>
                             <div className="medical-item">
-                              <span className="medical-label">Last Pap Smear</span>
+                              <span className="medical-label">
+                                <FaCalendarAlt />
+                                <span>Last Pap Smear</span>
+                              </span>
                               <span className="medical-value">{selectedPatient.last_pap_smear ? new Date(selectedPatient.last_pap_smear).toLocaleDateString() : 'Not provided'}</span>
                             </div>
                           </div>
                           
                           <div className="medical-notes">
                             <div className="note-item">
-                              <h4>Allergies</h4>
+                              <h4>
+                                <FaAllergies />
+                                <span>Allergies</span>
+                              </h4>
                               <p>{selectedPatient.known_allergies || 'None reported'}</p>
                             </div>
                             <div className="note-item">
-                              <h4>Current Medications</h4>
+                              <h4>
+                                <FaPills />
+                                <span>Current Medications</span>
+                              </h4>
                               <p>{selectedPatient.current_medications || 'None reported'}</p>
                             </div>
                             <div className="note-item">
-                              <h4>Gynecological Conditions</h4>
+                              <h4>
+                                <FaFemale />
+                                <span>Gynecological Conditions</span>
+                              </h4>
                               <p>{selectedPatient.gynecological_conditions || 'None reported'}</p>
                             </div>
                           </div>
                         </div>
                         
                         <div className="records-container">
-                          <h3>Medical Records</h3>
+                          <div className="records-header">
+                            <h3>
+                              <FaFileAlt />
+                              <span>Medical Records</span>
+                            </h3>
+                            <div className="search-container">
+                              <div className="search-input-wrapper">
+                                <FaSearch className="search-icon" />
+                                <input
+                                  type="text"
+                                  className="search-input"
+                                  placeholder="Search records..."
+                                  value={recordSearchTerm}
+                                  onChange={handleRecordSearchChange}
+                                  aria-label="Search records"
+                                />
+                                {recordSearchTerm && (
+                                  <button 
+                                    className="clear-search" 
+                                    onClick={handleClearRecordSearch}
+                                    aria-label="Clear search"
+                                  >
+                                    ×
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
                           
                           {selectedPatient.records.length === 0 ? (
                             <div className="empty-records">
                               <FaFileMedical className="empty-icon-small" />
                               <p className="no-records">No records available</p>
+                            </div>
+                          ) : filteredRecords.length === 0 ? (
+                            <div className="empty-records">
+                              <p className="no-records">No records match your search.</p>
                             </div>
                           ) : (
                             <div className="table-container">
@@ -328,7 +491,7 @@ export default function PatientRecords() {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {selectedPatient.records.map((record) => (
+                                  {filteredRecords.map((record) => (
                                     <tr key={record.id}>
                                       <td>{record.file_name}</td>
                                       <td className="hide-on-mobile">{record.file_type}</td>
@@ -338,6 +501,7 @@ export default function PatientRecords() {
                                         <button
                                           className="download-button"
                                           onClick={() => downloadRecord(record.file_path, record.file_name)}
+                                          aria-label="Download record"
                                         >
                                           <FaDownload className="download-icon" />
                                           <span className="hide-on-small">Download</span>

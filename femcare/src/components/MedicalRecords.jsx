@@ -17,7 +17,8 @@ import {
   FaInfoCircle,
   FaTimes,
   FaFolder,
-  FaHeart
+  FaHeart,
+  FaCheck
 } from 'react-icons/fa'; 
 import { motion, AnimatePresence } from 'framer-motion';
 import '../styles/MedicalRecords.css';
@@ -34,13 +35,21 @@ export default function MedicalRecords() {
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        return savedState ? JSON.parse(savedState) : false;
+    });
     const [showMobileSearch, setShowMobileSearch] = useState(false);
+    const [isMobileSidebarVisible, setIsMobileSidebarVisible] = useState(false);
     const fileInputRef = useRef(null);
 
     // Handler functions
     const handleSidebarCollapse = (collapsed) => {
         setIsSidebarCollapsed(collapsed);
+    };
+
+    const toggleMobileSidebar = () => {
+        setIsMobileSidebarVisible(!isMobileSidebarVisible);
     };
 
     const showNotification = (msg, type = 'success') => {
@@ -291,15 +300,28 @@ export default function MedicalRecords() {
         fileInputRef.current.click();
     };
 
+    const handleSignOut = () => {
+        signOut();
+    };
+
+    useEffect(() => {
+        localStorage.setItem('sidebarCollapsed', JSON.stringify(isSidebarCollapsed));
+    }, [isSidebarCollapsed]);
+
     return (
-        <div className="app-wrapper">
-            <Sidenav onSignOut={signOut} onCollapsedChange={handleSidebarCollapse} />
-            <div className={`content-wrapper ${isSidebarCollapsed ? 'expanded' : ''}`}>
-                <Header isSidebarCollapsed={isSidebarCollapsed} />
-                
-                <div className="content-container">
-                    <div className="box-container">
-                        <div className="medical-records-content">
+        <div className="app-container">
+            <Header isSidebarCollapsed={isSidebarCollapsed} />
+            <div className="app-layout">
+                <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''} ${isMobileSidebarVisible ? 'mobile-visible' : ''}`}>
+                    <Sidenav 
+                        onCollapsedChange={handleSidebarCollapse}
+                        onSignOut={handleSignOut}
+                    />
+                </div>
+                <div className="main-content">
+                    <div className="profile-main">
+                        {/* Existing content inside content-container */}
+                        <div className="content-container">
                             {/* Header Section */}
                             <motion.div 
                                 className="page-header"
@@ -583,6 +605,15 @@ export default function MedicalRecords() {
                     </div>
                 </div>
             </div>
+            
+            {/* Mobile sidebar toggle button */}
+            <button 
+                className="mobile-sidebar-toggle"
+                onClick={toggleMobileSidebar}
+                aria-label="Toggle sidebar"
+            >
+                ≡
+            </button>
         </div>
     );
 }

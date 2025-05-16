@@ -34,7 +34,7 @@ body {
   display: flex;
   width: 100%;
   min-height: 100vh;
-  position: relative;
+  background-color: var(--bg-pink-light);
 }
 
 /* Sidebar */
@@ -71,11 +71,12 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Main Content Container */
+/* Main Container */
 .booking-container {
   flex: 1;
   margin-left: var(--sidebar-width);
-  padding-top: calc(var(--header-height) + 1.5rem);
+  padding-top: var(--header-height);
+  min-height: 100vh;
   transition: all 0.3s ease;
   width: calc(100% - var(--sidebar-width));
 }
@@ -85,19 +86,22 @@ body {
   width: calc(100% - var(--sidebar-collapsed-width));
 }
 
+/* Content Layout */
 .content-wrapper {
   max-width: 1800px;
   margin: 0 auto;
-  padding: 0 1.5rem 2rem;
+  padding: 2rem;
   width: 100%;
+  height: calc(100vh - var(--header-height));
+  overflow-y: auto;
 }
 
-/* Booking Layout */
+/* Booking Layout Grid */
 .booking-layout {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: minmax(0, 1fr) 350px;
   gap: 2rem;
-  margin-top: 1.5rem;
+  height: 100%;
 }
 
 /* Main Content Area */
@@ -105,10 +109,13 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  height: fit-content;
 }
 
 /* Sidebar Content */
 .booking-sidebar {
+  top: calc(var(--header-height) + 2rem);
+  height: fit-content;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -117,15 +124,17 @@ body {
 /* Calendar Widget */
 .calendar-widget {
   background-color: white;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 1.5rem;
   box-shadow: var(--shadow-soft);
+  top: calc(var(--header-height) + 2rem);
+  z-index: 10;
 }
 
 /* Summary Widget */
 .summary-widget {
   background-color: white;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 1.5rem;
   box-shadow: var(--shadow-soft);
   position: sticky;
@@ -171,10 +180,10 @@ label {
 
 /* Time Slots */
 .time-slots-container {
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 1rem;
 }
 
 .slot-section {
@@ -194,8 +203,8 @@ label {
 
 .slots-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
   width: 100%;
 }
 
@@ -356,9 +365,9 @@ label {
 /* Doctor Cards */
 .doctors-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
-  width: 100%;
+  margin-top: 1rem;
 }
 
 .doctor-card {
@@ -430,6 +439,29 @@ label {
   margin-bottom: 0.25rem;
 }
 
+/* Add styles for the reason text in appointment summary */
+.summary-item .reason-text {
+  max-height: 100px;
+  overflow-y: auto;
+  padding-right: 10px;
+  /* Styling the scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-light) transparent;
+}
+
+.summary-item .reason-text::-webkit-scrollbar {
+  width: 6px;
+}
+
+.summary-item .reason-text::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.summary-item .reason-text::-webkit-scrollbar-thumb {
+  background-color: var(--primary-light);
+  border-radius: 3px;
+}
+
 /* Calendar */
 .react-calendar {
   width: 100%;
@@ -482,8 +514,11 @@ label {
 
 /* Upcoming Appointments */
 .upcoming-appointments {
+  background-color: white;
+  border-radius: 16px;
+  padding: 2rem;
   margin-bottom: 2rem;
-  width: 100%;
+  box-shadow: var(--shadow-soft);
 }
 
 .upcoming-appointments h3 {
@@ -492,9 +527,9 @@ label {
 
 .appointments-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* Increased minimum width */
   gap: 1rem;
-  width: 100%;
+  margin-top: 1rem;
 }
 
 .appointment-card {
@@ -504,12 +539,8 @@ label {
   box-shadow: var(--shadow-soft);
   transition: all 0.3s ease;
   border: 2px solid var(--bg-pink-light);
-}
-
-.appointment-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-medium);
-  border-color: var(--primary-pink);
+  min-width: 350px; /* Added minimum width */
+  width: 100%; /* Takes full width of container */
 }
 
 .appointment-date {
@@ -573,8 +604,8 @@ label {
 .time-selection-section,
 .booking-form-section {
   background-color: white;
-  border-radius: 12px;
-  padding: 1.5rem;
+  border-radius: 16px;
+  padding: 2rem;
   box-shadow: var(--shadow-soft);
 }
 
@@ -613,21 +644,25 @@ label {
 /* Responsive Breakpoints */
 @media screen and (max-width: 1400px) {
   .booking-layout {
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: minmax(0, 1fr) 300px;
   }
   
   .doctors-grid {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
 }
 
 @media screen and (max-width: 1200px) {
+  .content-wrapper {
+    padding: 1.5rem;
+  }
+  
   .doctors-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
   
   .slots-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   }
 }
 
@@ -637,16 +672,14 @@ label {
   }
   
   .booking-sidebar {
+    position: relative;
+    top: 0;
     order: -1;
-    margin-bottom: 1.5rem;
   }
   
-  .calendar-widget {
-    position: static;
-  }
-  
-  .summary-widget {
-    position: static;
+  .content-wrapper {
+    height: auto;
+    overflow-y: visible;
   }
 }
 
@@ -684,7 +717,7 @@ label {
   }
   
   .content-wrapper {
-    padding: 0 1rem 1.5rem;
+    padding: 1rem;
   }
   
   .page-title {
@@ -696,62 +729,42 @@ label {
     font-size: 1.25rem;
   }
   
-  .doctors-grid {
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  .doctor-selection-section,
+  .time-selection-section,
+  .booking-form-section,
+  .calendar-widget,
+  .summary-widget,
+  .upcoming-appointments {
+    padding: 1.5rem;
   }
-  
-  .doctor-card {
-    padding: 1.25rem;
-  }
-  
-  .doctor-card h4 {
-    font-size: 1rem;
-  }
-  
+
+  .doctors-grid,
   .slots-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
   
   .appointments-list {
     grid-template-columns: 1fr;
   }
-  
-  .appointment-card {
-    padding: 1.25rem;
-  }
 }
 
 @media screen and (max-width: 480px) {
+  .content-wrapper {
+    padding: 1rem 0.75rem;
+  }
+  
   .doctor-selection-section,
   .time-selection-section,
   .booking-form-section,
   .calendar-widget,
-  .summary-widget {
+  .summary-widget,
+  .upcoming-appointments {
     padding: 1.25rem;
   }
-  
-  .doctors-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  
+
+  .doctors-grid,
   .slots-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-  }
-  
-  .slot-button {
-    padding: 0.5rem;
-    min-height: 44px;
-    font-size: 0.9rem;
-  }
-  
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    padding: 0.75rem;
-  }
-  
-  .book-button {
-    padding: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
   }
 }

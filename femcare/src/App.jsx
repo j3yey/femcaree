@@ -16,6 +16,8 @@ import PatientsData from './components/PatientsData'
 import Profile from './components/Profile'
 import MedicalRecords from './components/MedicalRecords'
 import AppointmentsBooking from './components/AppointmentsBooking'
+import DoctorMessages from './components/DoctorMessages'
+import PatientMessages from './components/PatientMessages'
 import './App.css'
 
 function App() {
@@ -65,7 +67,15 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-
+            
+            <Route 
+              path="/patient-messages" 
+              element={
+                <ProtectedRoute requiredRole="patient">
+                  <PatientMessages />
+                </ProtectedRoute>
+              } 
+            />
             {/* Doctor Protected Routes */}
             <Route 
               path="/doctor-dashboard" 
@@ -104,6 +114,14 @@ function App() {
               element={
                 <ProtectedRoute requiredRole="doctor">
                   <PatientsData />
+                </ProtectedRoute>
+              } 
+            />
+             <Route 
+              path="/doctor-messages" 
+              element={
+                <ProtectedRoute requiredRole="doctor">
+                  <DoctorMessages />
                 </ProtectedRoute>
               } 
             />

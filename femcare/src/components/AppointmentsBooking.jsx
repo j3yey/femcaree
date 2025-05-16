@@ -8,6 +8,66 @@ import '../styles/AppointmentsBooking.css'
 import Sidenav from './Sidenav'
 import Header from './Header'
 
+// Organized appointment types data structure
+const APPOINTMENT_TYPES = {
+  "Routine Check-Ups & Screenings": [
+    "Annual pelvic exam",
+    "Pap smear",
+    "Breast exam",
+    "HPV screening",
+    "STI testing"
+  ],
+  "Birth Control & Family Planning": [
+    "Contraceptive counseling",
+    "Birth control prescriptions",
+    "IUD insertion/removal",
+    "Implant insertion/removal",
+    "Emergency contraception"
+  ],
+  "Pregnancy-Related Appointments": [
+    "Preconception counseling",
+    "Prenatal care",
+    "Ultrasound appointments",
+    "Genetic screening and testing",
+    "Labor and delivery planning",
+    "Postpartum check-up"
+  ],
+  "Menstrual and Hormonal Issues": [
+    "Irregular periods",
+    "Painful or heavy menstruation",
+    "PMS or PMDD management",
+    "Perimenopause and menopause care",
+    "Hormone therapy"
+  ],
+  "Gynecological Concerns": [
+    "Vaginal infections",
+    "Urinary tract infections (UTIs)",
+    "Pelvic pain",
+    "Endometriosis",
+    "Polycystic ovary syndrome (PCOS)",
+    "Ovarian cysts or fibroids"
+  ],
+  "Fertility & Infertility Services": [
+    "Fertility evaluation",
+    "Ovulation tracking",
+    "Referral for assisted reproductive technologies"
+  ],
+  "Surgeries & Procedures": [
+    "Colposcopy",
+    "Endometrial biopsy",
+    "Laparoscopy",
+    "D&C (dilation and curettage)",
+    "Hysteroscopy",
+    "Hysterectomy consultations"
+  ],
+  "Sexual Health & Counseling": [
+    "Sexual dysfunction",
+    "Pain during intercourse",
+    "Libido issues",
+    "LGBTQ+ reproductive health counseling"
+  ]
+};
+
 export default function AppointmentBooking() {
   const { user } = useAuth()
   const [doctors, setDoctors] = useState([])
@@ -29,6 +89,11 @@ export default function AppointmentBooking() {
   const [isMobileSidebarVisible, setIsMobileSidebarVisible] = useState(false);
   const [loadingStates, setLoadingStates] = useState({});
   const [pollingInterval, setPollingInterval] = useState(null);
+  
+  // State variables for appointment types
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+  const [typesForCategory, setTypesForCategory] = useState([]);
 
   // Define fixed time slots with UTC awareness
   const TIME_SLOTS = {
@@ -45,6 +110,17 @@ export default function AppointmentBooking() {
       { start: '16:00', end: '17:00', label: '4:00-5:00 PM' }
     ]
   };
+
+  // Update appointment types when category changes
+  useEffect(() => {
+    if (selectedCategory) {
+      setTypesForCategory(APPOINTMENT_TYPES[selectedCategory] || []);
+      setSelectedType(""); // Reset selected type when category changes
+    } else {
+      setTypesForCategory([]);
+      setSelectedType("");
+    }
+  }, [selectedCategory]);
 
   // Function to check if a slot overlaps with any booked slots
   const isSlotOverlapping = (slot, bookedSlots) => {
@@ -277,7 +353,7 @@ export default function AppointmentBooking() {
     const doctor = doctors.find(d => d.user_id === selectedDoctor);
     
     const confirmed = window.confirm(
-      `Confirm appointment with Dr. ${doctor?.full_name} on ${format(new Date(selectedDate), 'MMMM d, yyyy')} at ${selectedTimeSlot.label}?`
+      `Confirm ${selectedType} appointment with Dr. ${doctor?.full_name} on ${format(new Date(selectedDate), 'MMMM d, yyyy')} at ${selectedTimeSlot.label}?`
     );
     
     if (!confirmed) return;
@@ -318,6 +394,8 @@ export default function AppointmentBooking() {
           end_time: selectedTimeSlot.end,
           reason: reason.trim(),
           status: 'pending',
+          appointment_category: selectedCategory, // Store the category
+          appointment_type: selectedType, // Store the specific type
           created_at: new Date().toISOString()
         }]);
 
@@ -364,6 +442,14 @@ export default function AppointmentBooking() {
       setError('Please provide a reason for the visit');
       return false;
     }
+    if (!selectedCategory) {
+      setError('Please select an appointment category');
+      return false;
+    }
+    if (!selectedType) {
+      setError('Please select an appointment type');
+      return false;
+    }
     return true;
   }
 
@@ -384,6 +470,9 @@ export default function AppointmentBooking() {
               </div>
               <div className="appointment-doctor">
                 {apt.doctors?.full_name}
+              </div>
+              <div className="appointment-type">
+                {apt.appointment_type || "General consultation"}
               </div>
               <div className="appointment-status">
                 {apt.status}
@@ -492,6 +581,52 @@ export default function AppointmentBooking() {
     );
   }
 
+  const renderAppointmentTypeSelectors = () => {
+    return (
+      <div className="appointment-type-section">
+        <h3 className="section-title">Appointment Type</h3>
+        <div className="appointment-type-selectors">
+          <div className="form-group">
+            <label htmlFor="category">Appointment Category</label>
+            <select
+              id="category"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="type-selector"
+              required
+            >
+              <option value="">-- Select Category --</option>
+              {Object.keys(APPOINTMENT_TYPES).map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="type">Specific Type</label>
+            <select
+              id="type"
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+              className="type-selector"
+              disabled={!selectedCategory}
+              required
+            >
+              <option value="">-- Select Type --</option>
+              {typesForCategory.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderAppointmentSummary = () => {
     if (!selectedDoctor || !selectedDate || !selectedSlot) return null;
 
@@ -516,10 +651,22 @@ export default function AppointmentBooking() {
           <span className="summary-label">Time:</span>
           <span>{selectedSlot.label}</span>
         </div>
+        {selectedCategory && (
+          <div className="summary-item">
+            <span className="summary-label">Category:</span>
+            <span>{selectedCategory}</span>
+          </div>
+        )}
+        {selectedType && (
+          <div className="summary-item">
+            <span className="summary-label">Appointment Type:</span>
+            <span>{selectedType}</span>
+          </div>
+        )}
         {reason && (
           <div className="summary-item">
             <span className="summary-label">Reason:</span>
-            <span>{reason}</span>
+            <div className="reason-text">{reason}</div>
           </div>
         )}
       </div>
@@ -542,9 +689,7 @@ export default function AppointmentBooking() {
       </div>
       
       <div className={`booking-container ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-        <div className="content-wrapper">
-          <h2 className="page-title">Book an Appointment</h2>
-          
+        <div className="content-wrapper">          
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">Appointment booked successfully!</div>}
           
@@ -561,6 +706,9 @@ export default function AppointmentBooking() {
                 <h3 className="section-title">Available Times</h3>
                 {renderTimeSlots()}
               </section>
+              
+              {/* Appointment type selection section */}
+              {renderAppointmentTypeSelectors()}
               
               <section className="booking-form-section">
                 <h3 className="section-title">Complete Booking</h3>
@@ -584,7 +732,7 @@ export default function AppointmentBooking() {
                     type="submit" 
                     className="book-button"
                     onClick={handleBooking}
-                    disabled={loading || !selectedDoctor || !selectedDate || !selectedSlot || !reason.trim()}
+                    disabled={loading || !selectedDoctor || !selectedDate || !selectedSlot || !reason.trim() || !selectedCategory || !selectedType}
                   >
                     {loading ? 'Booking...' : 'Book Appointment'}
                   </button>

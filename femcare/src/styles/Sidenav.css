@@ -1,7 +1,7 @@
 /* Sidebar Base */
 .sidebar {
     width: 250px; /* Slightly narrower to match main content margin */
-    background: linear-gradient(180deg, #ff69b4 0%, #da4a91 100%);
+    background: #be185d !important; /* Add if needed to override any conflicting styles */
     color: white;
     height: 100vh;
     display: flex;

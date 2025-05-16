@@ -2,13 +2,16 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import Header from './Header';
 import Sidenav from './Sidenav';
-import { FaCamera, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
+import { FaCamera, FaEdit, FaSave, FaTimes, FaUserMd, FaCalendarAlt, FaPhone, FaVenusMars } from 'react-icons/fa';
 import '../styles/Profile.css';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Profile() {
   const { user } = useAuth();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    const savedState = localStorage.getItem('sidebarCollapsed');
+    return savedState ? JSON.parse(savedState) : false;
+  });
   const [profileData, setProfileData] = useState({
     full_name: '',
     date_of_birth: '',
@@ -31,12 +34,17 @@ export default function Profile() {
   const [error, setError] = useState(null);
   const currentDateTime = '2025-04-19 19:46:45';
   const currentUser = 'j3yey';
+  const [isMobileSidebarVisible, setIsMobileSidebarVisible] = useState(false);
 
   useEffect(() => {
     if (user) {
       fetchProfileData();
     }
   }, [user]);
+
+  useEffect(() => {
+    localStorage.setItem('sidebarCollapsed', JSON.stringify(isSidebarCollapsed));
+  }, [isSidebarCollapsed]);
 
   const handleSidebarCollapse = (collapsed) => {
     setIsSidebarCollapsed(collapsed);
@@ -187,272 +195,307 @@ export default function Profile() {
     }
   };
 
+  const toggleMobileSidebar = () => {
+    setIsMobileSidebarVisible(!isMobileSidebarVisible);
+  };
+
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="fullscreen-loader">
+        <div className="loader-spinner"></div>
+        <p>Loading profile...</p>
+      </div>
+    );
   }
 
   return (
     <div className="app-container">
       <Header isSidebarCollapsed={isSidebarCollapsed} />
       <div className="app-layout">
-        <Sidenav onCollapsedChange={handleSidebarCollapse} />
+        <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''} ${isMobileSidebarVisible ? 'mobile-visible' : ''}`}>
+          <Sidenav onCollapsedChange={handleSidebarCollapse} />
+        </div>
         <div className="main-content">
           <div className="profile-main">
             {error && (
               <div className="error-message">
+                <FaTimes className="error-icon" />
                 {error}
               </div>
             )}
           
-          <div className="profile-header">
-              <div className="profile-picture-section">
-                <div className="profile-picture-container">
-                  <img 
-                    src={previewUrl || formData.profile_picture || '/default-avatar.png'} 
-                    alt="Profile" 
-                    className="profile-picture" 
-                  />
-                  {isEditing && (
-                    <div className="profile-picture-upload">
-                      <label htmlFor="profilePicture" className="upload-label">
-                        <FaCamera className="camera-icon" />
-                        <span>Change Photo</span>
-                      </label>
-                      <input
-                        type="file"
-                        id="profilePicture"
-                        name="profilePicture"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="hidden-input"
-                      />
-                    </div>
-                  )}
+            <div className="profile-header-container">
+              <div className="profile-header">
+                <div className="profile-picture-section">
+                  <div className="profile-picture-container">
+                    <img 
+                      src={previewUrl || formData.profile_picture || '/default-avatar.png'} 
+                      alt="Profile" 
+                      className="profile-picture" 
+                    />
+                    {isEditing && (
+                      <div className="profile-picture-upload">
+                        <label htmlFor="profilePicture" className="upload-label">
+                          <FaCamera className="camera-icon" />
+                          <span>Change Photo</span>
+                        </label>
+                        <input
+                          type="file"
+                          id="profilePicture"
+                          name="profilePicture"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          className="hidden-input"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <h1>Patient Profile</h1>
-              <div className="datetime-display">
-                Current Date and Time (UTC): {currentDateTime}
-              </div>
-              <div className="user-info">
-                User: {currentUser}
+                <div className="profile-title-section">
+                  <h1>Patient Profile</h1>
+                  <h2 className="patient-name">{profileData.full_name || 'No Name Provided'}</h2>
+                </div>
               </div>
             </div>
           
-          <form onSubmit={handleSubmit} className="profile-grid">
-            {/* Basic Information Section */}
-            <div className="profile-section">
-              <h2>Basic Information</h2>
-              <div className="info-grid">
-                <div className="form-group">
-                  <label htmlFor="full_name">Full Name</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      id="full_name"
-                      name="full_name"
-                      value={formData.full_name}
-                      onChange={handleInputChange}
-                    />
-                  ) : (
-                    <p>{profileData.full_name || 'Not provided'}</p>
-                  )}
+            <form onSubmit={handleSubmit} className="profile-grid custom-scrollbar">
+              {/* Basic Information Section */}
+              <div className="profile-section">
+                <div className="section-header">
+                  <FaUserMd className="section-icon" />
+                  <h2>Basic Information</h2>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="date_of_birth">Date of Birth</label>
-                  {isEditing ? (
-                    <input
-                      type="date"
-                      id="date_of_birth"
-                      name="date_of_birth"
-                      value={formData.date_of_birth}
-                      onChange={handleInputChange}
-                    />
-                  ) : (
-                    <p>{profileData.date_of_birth || 'Not provided'}</p>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label htmlFor="phone_number">Phone Number</label>
-                  {isEditing ? (
-                    <input
-                      type="tel"
-                      id="phone_number"
-                      name="phone_number"
-                      value={formData.phone_number}
-                      onChange={handleInputChange}
-                    />
-                  ) : (
-                    <p>{profileData.phone_number || 'Not provided'}</p>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label htmlFor="last_menstrual_period">Last Menstrual Period</label>
-                  {isEditing ? (
-                    <input
-                      type="date"
-                      id="last_menstrual_period"
-                      name="last_menstrual_period"
-                      value={formData.last_menstrual_period}
-                      onChange={handleInputChange}
-                    />
-                  ) : (
-                    <p>{profileData.last_menstrual_period || 'Not provided'}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Medical History Section */}
-            <div className="profile-section">
-              <h2>Medical History</h2>
-              <div className="info-grid">
-                <div className="form-group">
-                  <label htmlFor="pregnancies_count">Number of Pregnancies</label>
-                  {isEditing ? (
-                    <input
-                      type="number"
-                      id="pregnancies_count"
-                      name="pregnancies_count"
-                      value={formData.pregnancies_count}
-                      onChange={handleInputChange}
-                      min="0"
-                    />
-                  ) : (
-                    <p>{profileData.pregnancies_count}</p>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label htmlFor="live_births_count">Number of Live Births</label>
-                  {isEditing ? (
-                    <input
-                      type="number"
-                      id="live_births_count"
-                      name="live_births_count"
-                      value={formData.live_births_count}
-                      onChange={handleInputChange}
-                      min="0"
-                    />
-                  ) : (
-                    <p>{profileData.live_births_count}</p>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label htmlFor="known_allergies">Known Allergies</label>
-                  {isEditing ? (
-                    <textarea
-                      id="known_allergies"
-                      name="known_allergies"
-                      value={formData.known_allergies}
-                      onChange={handleInputChange}
-                    />
-                  ) : (
-                    <p>{profileData.known_allergies || 'None reported'}</p>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label htmlFor="current_medications">Current Medications</label>
-                  {isEditing ? (
-                    <textarea
-                      id="current_medications"
-                      name="current_medications"
-                      value={formData.current_medications}
-                      onChange={handleInputChange}
-                    />
-                  ) : (
-                    <p>{profileData.current_medications || 'None reported'}</p>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label htmlFor="gynecological_conditions">Gynecological Conditions</label>
-                  {isEditing ? (
-                    <textarea
-                      id="gynecological_conditions"
-                      name="gynecological_conditions"
-                      value={formData.gynecological_conditions}
-                      onChange={handleInputChange}
-                    />
-                  ) : (
-                    <p>{profileData.gynecological_conditions || 'None reported'}</p>
-                  )}
+                <div className="info-grid">
+                  <div className="form-group">
+                    <label htmlFor="full_name">Full Name</label>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        id="full_name"
+                        name="full_name"
+                        value={formData.full_name}
+                        onChange={handleInputChange}
+                        placeholder="Enter your full name"
+                      />
+                    ) : (
+                      <p>{profileData.full_name || 'Not provided'}</p>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="date_of_birth">Date of Birth</label>
+                    {isEditing ? (
+                      <input
+                        type="date"
+                        id="date_of_birth"
+                        name="date_of_birth"
+                        value={formData.date_of_birth}
+                        onChange={handleInputChange}
+                      />
+                    ) : (
+                      <p>{profileData.date_of_birth || 'Not provided'}</p>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="phone_number">Phone Number</label>
+                    {isEditing ? (
+                      <input
+                        type="tel"
+                        id="phone_number"
+                        name="phone_number"
+                        value={formData.phone_number}
+                        onChange={handleInputChange}
+                        placeholder="Enter your phone number"
+                      />
+                    ) : (
+                      <p>{profileData.phone_number || 'Not provided'}</p>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="last_menstrual_period">Last Menstrual Period</label>
+                    {isEditing ? (
+                      <input
+                        type="date"
+                        id="last_menstrual_period"
+                        name="last_menstrual_period"
+                        value={formData.last_menstrual_period}
+                        onChange={handleInputChange}
+                      />
+                    ) : (
+                      <p>{profileData.last_menstrual_period || 'Not provided'}</p>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Screening History Section */}
-            <div className="profile-section">
-              <h2>Screening History</h2>
-              <div className="info-grid">
-                <div className="form-group">
-                  <label htmlFor="last_pap_smear">Last Pap Smear Date</label>
-                  {isEditing ? (
-                    <input
-                      type="date"
-                      id="last_pap_smear"
-                      name="last_pap_smear"
-                      value={formData.last_pap_smear}
-                      onChange={handleInputChange}
-                    />
-                  ) : (
-                    <p>{profileData.last_pap_smear || 'Not provided'}</p>
-                  )}
+              {/* Medical History Section */}
+              <div className="profile-section">
+                <div className="section-header">
+                  <FaVenusMars className="section-icon" />
+                  <h2>Medical History</h2>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="last_pap_smear_result">Last Pap Smear Result</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      id="last_pap_smear_result"
-                      name="last_pap_smear_result"
-                      value={formData.last_pap_smear_result}
-                      onChange={handleInputChange}
-                    />
-                  ) : (
-                    <p>{profileData.last_pap_smear_result || 'Not provided'}</p>
-                  )}
+                <div className="info-grid">
+                  <div className="form-group">
+                    <label htmlFor="pregnancies_count">Number of Pregnancies</label>
+                    {isEditing ? (
+                      <input
+                        type="number"
+                        id="pregnancies_count"
+                        name="pregnancies_count"
+                        value={formData.pregnancies_count}
+                        onChange={handleInputChange}
+                        min="0"
+                      />
+                    ) : (
+                      <p>{profileData.pregnancies_count}</p>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="live_births_count">Number of Live Births</label>
+                    {isEditing ? (
+                      <input
+                        type="number"
+                        id="live_births_count"
+                        name="live_births_count"
+                        value={formData.live_births_count}
+                        onChange={handleInputChange}
+                        min="0"
+                      />
+                    ) : (
+                      <p>{profileData.live_births_count}</p>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="known_allergies">Known Allergies</label>
+                    {isEditing ? (
+                      <textarea
+                        id="known_allergies"
+                        name="known_allergies"
+                        value={formData.known_allergies}
+                        onChange={handleInputChange}
+                        placeholder="List any known allergies"
+                      />
+                    ) : (
+                      <p>{profileData.known_allergies || 'None reported'}</p>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="current_medications">Current Medications</label>
+                    {isEditing ? (
+                      <textarea
+                        id="current_medications"
+                        name="current_medications"
+                        value={formData.current_medications}
+                        onChange={handleInputChange}
+                        placeholder="List any current medications"
+                      />
+                    ) : (
+                      <p>{profileData.current_medications || 'None reported'}</p>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="gynecological_conditions">Gynecological Conditions</label>
+                    {isEditing ? (
+                      <textarea
+                        id="gynecological_conditions"
+                        name="gynecological_conditions"
+                        value={formData.gynecological_conditions}
+                        onChange={handleInputChange}
+                        placeholder="List any gynecological conditions"
+                      />
+                    ) : (
+                      <p>{profileData.gynecological_conditions || 'None reported'}</p>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
 
-          <div className="form-actions">
-            {isEditing ? (
-              <>
+              {/* Screening History Section */}
+              <div className="profile-section">
+                <div className="section-header">
+                  <FaCalendarAlt className="section-icon" />
+                  <h2>Screening History</h2>
+                </div>
+                <div className="info-grid">
+                  <div className="form-group">
+                    <label htmlFor="last_pap_smear">Last Pap Smear Date</label>
+                    {isEditing ? (
+                      <input
+                        type="date"
+                        id="last_pap_smear"
+                        name="last_pap_smear"
+                        value={formData.last_pap_smear}
+                        onChange={handleInputChange}
+                      />
+                    ) : (
+                      <p>{profileData.last_pap_smear || 'Not provided'}</p>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="last_pap_smear_result">Last Pap Smear Result</label>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        id="last_pap_smear_result"
+                        name="last_pap_smear_result"
+                        value={formData.last_pap_smear_result}
+                        onChange={handleInputChange}
+                        placeholder="Enter test result"
+                      />
+                    ) : (
+                      <p>{profileData.last_pap_smear_result || 'Not provided'}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <div className={`form-actions ${isEditing ? 'editing' : ''}`}>
+              {isEditing ? (
+                <>
+                  <button 
+                    type="button" 
+                    className="save-button" 
+                    onClick={handleSubmit}
+                    disabled={loading}
+                  >
+                    <FaSave /> {loading ? 'Saving...' : 'Save Changes'}
+                  </button>
+                  <button 
+                    type="button" 
+                    className="cancel-button"
+                    onClick={() => {
+                      setFormData(profileData);
+                      setIsEditing(false);
+                      setPreviewUrl(null);
+                    }}
+                    disabled={loading}
+                  >
+                    <FaTimes /> Cancel
+                  </button>
+                </>
+              ) : (
                 <button 
-                  type="button" 
-                  className="save-button" 
-                  onClick={handleSubmit}
+                  type="button"
+                  className="edit-profile-button"
+                  onClick={() => setIsEditing(true)}
                   disabled={loading}
                 >
-                  <FaSave /> {loading ? 'Saving...' : 'Save Changes'}
+                  <FaEdit /> Edit Profile
                 </button>
-                <button 
-                  type="button" 
-                  className="cancel-button"
-                  onClick={() => {
-                    setFormData(profileData);
-                    setIsEditing(false);
-                    setPreviewUrl(null);
-                  }}
-                  disabled={loading}
-                >
-                  <FaTimes /> Cancel
-                </button>
-              </>
-            ) : (
-              <button 
-                type="button"
-                className="edit-profile-button"
-                onClick={() => setIsEditing(true)}
-                disabled={loading}
-              >
-                <FaEdit /> Edit Profile
-              </button>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      
+      {/* Add mobile sidebar toggle button */}
+      <button 
+        className="mobile-sidebar-toggle"
+        onClick={toggleMobileSidebar}
+        aria-label="Toggle sidebar"
+      >
+        ≡
+      </button>
     </div>
   );
 }

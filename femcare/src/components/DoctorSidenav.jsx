@@ -6,7 +6,8 @@ import {
   FaSignOutAlt, 
   FaHome, 
   FaFileAlt,
-  FaUserInjured
+  FaUserInjured,
+  FaEnvelope // Add this new import
 } from 'react-icons/fa';
 import DoctorProfile from './DoctorProfile';
 import '../styles/Sidenav.css';
@@ -69,6 +70,11 @@ export default function DoctorSidenav({ onSignOut, onSidebarToggle, isCollapsed 
       to: "/patients-data",
       icon: <FaUserInjured className="menu-icon" />,
       label: "Patients"
+    },
+    {
+      to: "/doctor-messages",
+      icon: <FaEnvelope className="menu-icon" />,
+      label: "Messages"
     }
   ];
 

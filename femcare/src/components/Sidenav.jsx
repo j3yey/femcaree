@@ -8,7 +8,8 @@ import {
   FaFileAlt,
   FaUser,
   FaBabyCarriage,
-  FaChartLine 
+  FaChartLine,
+  FaEnvelope
 } from 'react-icons/fa';
 import '../styles/Sidenav.css';
 
@@ -53,7 +54,12 @@ export default function Sidenav({ onSignOut, onCollapsedChange }) {
       to: "/profile",
       icon: <FaUser className="menu-icon" />,
       label: "Profile"
-    }
+    },
+      {
+    to: "/patient-messages", // Add new route for messages
+    icon: <FaEnvelope className="menu-icon" />,
+    label: "Messages"
+  }
   ];
 
   return (

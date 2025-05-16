@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../supabaseClient'
 import { useNavigate } from 'react-router-dom'
+import '../styles/login.css'
 
 export default function DoctorLogin() {
   const navigate = useNavigate()
@@ -56,46 +57,48 @@ export default function DoctorLogin() {
   }
 
   return (
-    <div className="auth-container">
-      <h2>Doctor Login</h2>
-      
-      {error && <div className="error-message">{error}</div>}
-      
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-          />
-        </div>
+    <div className="auth-wrapper">
+      <div className="auth-container">
+        <h2>Doctor Login</h2>
         
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-          />
-        </div>
+        {error && <div className="error-message">{error}</div>}
         
-        <button type="submit" className="auth-button" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
-      
-      <div className="auth-note">
-        <p>
-          Doctor accounts are created by administrators only.
-        </p>
-        <p>
-          If you need an account, please contact the system administrator.
-        </p>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+            />
+          </div>
+          
+          <button type="submit" className="auth-button" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
+        
+        <div className="auth-note">
+          <p>
+            Doctor accounts are created by administrators only.
+          </p>
+          <p>
+            If you need an account, please contact the system administrator.
+          </p>
+        </div>
       </div>
     </div>
   )
